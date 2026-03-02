@@ -39,6 +39,8 @@ const GameEngine = ({ theme, settings }) => {
 
     const isConfigLocked = gameStarted && !isFinished;
     const inputRef = useRef(null);
+    const inputValueRef = useRef('');
+    const wordListRef = useRef([]);
 
     useEffect(() => {
         const bootSequence = setTimeout(() => setIsBooting(false), 800);
@@ -72,29 +74,33 @@ const GameEngine = ({ theme, settings }) => {
                     return next;
                 });
 
-                // Update real-time WPM for tracking
+                // Update real-time WPM using refs (no re-runs on type)
                 const timeElapsed = (Date.now() - startTime) / 60000;
-                const fullText = wordList.join(' ');
-                const correctChars = inputValue.split('').filter((c, i) => c === fullText[i]).length;
+                const fullText = wordListRef.current.join(' ');
+                const correctChars = inputValueRef.current.split('').filter((c, i) => c === fullText[i]).length;
                 const currentWpm = Math.round((correctChars / 5) / timeElapsed) || 0;
                 setWpmHistory(prev => [...prev, currentWpm]);
                 setStats(prev => ({ ...prev, wpm: currentWpm }));
             }, 1000);
         }
         return () => clearInterval(timer);
-    }, [gameStarted, startTime, isFinished, inputValue, wordList]);
+    }, [gameStarted, startTime, isFinished]);
 
     const generateNewWords = () => {
         setIsBooting(true);
         if (mode === 'quote') {
             const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-            setWordList(randomQuote.split(' '));
+            const quoteWords = randomQuote.split(' ');
+            setWordList(quoteWords);
+            wordListRef.current = quoteWords;
         } else {
             const count = mode === 'words' ? wordCount : 100;
             const words = generateWords(mode, count, { includePunctuation, includeNumbers });
             setWordList(words);
+            wordListRef.current = words;
         }
 
+        inputValueRef.current = '';
         setInputValue('');
         setStartTime(null);
         setIsFinished(false);
@@ -144,6 +150,7 @@ const GameEngine = ({ theme, settings }) => {
 
         const calculatedAccuracy = Math.round(((val.length - errors) / Math.max(1, val.length)) * 100);
         setStats(prev => ({ ...prev, errors, accuracy: Math.max(0, calculatedAccuracy) }));
+        inputValueRef.current = val;
         setInputValue(val);
 
         if ((mode === 'words' || mode === 'quote') && val.length >= fullText.length) {

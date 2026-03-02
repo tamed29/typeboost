@@ -34,6 +34,7 @@ import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
 import LessonsPage from './pages/LessonsPage';
 import AboutPage from './pages/AboutPage';
+import logo from './assets/logo.png';
 
 const THEMES = [
   { id: 'default', name: 'Original', color: '#38bdf8' },
@@ -50,33 +51,20 @@ const THEMES = [
 ];
 
 const TypeBoostLogo = ({ onClick }) => (
-  <div onClick={onClick} className="flex items-center gap-5 select-none group cursor-pointer">
-    <div className="relative flex items-center justify-center">
-      {/* Vite-inspired Logo Container */}
-      <div className="relative w-12 h-12 flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#41D1FF] to-[#BD34FE] rounded-2xl rotate-6 group-hover:rotate-0 transition-all duration-500 shadow-xl opacity-20" />
-        <div className="relative w-11 h-11 bg-background border border-white/10 rounded-2xl flex items-center justify-center group-hover:border-primary/50 transition-colors duration-500 overflow-hidden shadow-2xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <Zap
-            className="text-primary fill-primary drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.6)] group-hover:scale-110 transition-transform duration-500"
-            size={24}
-          />
-        </div>
-        {/* Glow behind the lightning bolt */}
-        <div className="absolute inset-0 flex items-center justify-center -z-10">
-          <div className="w-8 h-8 bg-primary/30 blur-xl group-hover:bg-primary/50 transition-colors" />
-        </div>
-      </div>
-    </div>
-
+  <div onClick={onClick} className="flex items-center gap-4 select-none group cursor-pointer">
+    <img
+      src={logo}
+      alt="TypeBoost Logo"
+      className="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)] group-hover:scale-110 transition-transform duration-300"
+    />
     <div className="flex flex-col">
-      <h1 className="text-2xl font-black tracking-tighter text-text group-hover:text-primary transition-colors flex items-center gap-1.5">
+      <h1 className="text-2xl font-black tracking-tighter text-text group-hover:text-primary transition-colors flex items-center gap-2">
         <span className="uppercase tracking-tight">Type</span>
-        <span className="text-primary italic">Boost</span>
+        <span className="text-primary italic font-cyber tracking-widest drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.4)]">Boost</span>
       </h1>
-      <div className="flex items-center gap-2">
-        <div className="h-[1px] w-5 bg-gradient-to-r from-primary/40 to-transparent" />
-        <span className="text-[9px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all duration-500">frontend_node_v4.2</span>
+      <div className="flex items-center gap-2 mt-0.5">
+        <div className="h-[1px] w-6 bg-primary/40" />
+        <span className="text-[9px] font-mono text-secondary uppercase tracking-[0.6em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all duration-500">nexus_protocol_v4.2</span>
       </div>
     </div>
   </div>
