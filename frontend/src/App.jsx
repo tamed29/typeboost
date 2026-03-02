@@ -21,7 +21,8 @@ import {
   Sun,
   Moon,
   Keyboard as KeyIcon,
-  ShieldAlert
+  ShieldAlert,
+  Hexagon
 } from 'lucide-react';
 
 import GameEngine from './components/Game/GameEngine';
@@ -49,27 +50,33 @@ const THEMES = [
 ];
 
 const TypeBoostLogo = ({ onClick }) => (
-  <div onClick={onClick} className="flex items-center gap-5 select-none group cursor-pointer">
+  <div onClick={onClick} className="flex items-center gap-6 select-none group cursor-pointer">
     <div className="relative flex items-center justify-center">
-      <div className="w-12 h-12 border-2 border-primary bg-primary/5 rounded-2xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-all duration-700 shadow-2xl shadow-primary/20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        <span className="text-primary font-black font-cyber text-2xl relative z-10 -rotate-3 group-hover:rotate-0 transition-all">T</span>
-      </div>
-      <div className="absolute -right-2 -top-2">
-        <div className="relative">
-          <Zap className="text-primary fill-primary animate-pulse z-10 relative" size={18} />
-          <div className="absolute inset-0 bg-primary blur-md opacity-50 animate-pulse" />
+      {/* Hexagonal Outer Frame */}
+      <div className="relative w-14 h-14 flex items-center justify-center">
+        <Hexagon
+          className="text-primary/20 fill-primary/5 group-hover:text-primary/40 group-hover:fill-primary/10 transition-all duration-700 rotate-12 group-hover:rotate-0"
+          size={56}
+          strokeWidth={1.5}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-10 h-10 border border-primary/40 rounded-xl rotate-45 group-hover:rotate-0 transition-all duration-500 flex items-center justify-center overflow-hidden">
+            <Zap className="text-primary fill-primary animate-pulse translate-y-[-1px]" size={20} />
+          </div>
         </div>
+        {/* Glow Effect */}
+        <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
       </div>
     </div>
+
     <div className="flex flex-col">
-      <h1 className="text-2xl font-black italic tracking-tighter text-text group-hover:text-primary transition-colors flex items-baseline">
-        <span className="font-cyber">TYPE</span>
-        <span className="text-primary ml-1">BOOST</span>
+      <h1 className="text-3xl font-black italic tracking-[-0.08em] text-text flex items-center gap-1.5 group-hover:scale-105 transition-transform duration-500 origin-left">
+        <span className="font-cyber uppercase text-primary drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]">Syncra</span>
+        <span className="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-md font-mono not-italic tracking-widest ml-1">v7.0</span>
       </h1>
-      <div className="flex items-center gap-2">
-        <div className="h-[1px] w-4 bg-primary/40" />
-        <span className="text-[8px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all">Node_v4.2.1</span>
+      <div className="flex items-center gap-2 mt-0.5">
+        <div className="h-[1px] w-6 bg-gradient-to-r from-primary/60 to-transparent" />
+        <span className="text-[9px] font-mono text-secondary uppercase tracking-[0.6em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all duration-500">PROX_PROTOCOL_LINK</span>
       </div>
     </div>
   </div>

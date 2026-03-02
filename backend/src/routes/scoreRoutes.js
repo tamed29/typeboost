@@ -1,42 +1,53 @@
 import express from 'express';
-const router = express.Router();
+import Score from '../models/Score.js';
 
-// Mock data for now until Firebase is connected
-let scores = [];
+const router = express.Router();
 
 // @route   POST /api/scores
 // @desc    Save a new game score
 router.post('/', async (req, res) => {
     try {
-        const { userId, wpm, accuracy, mode, difficulty } = req.body;
+        const { userId, username, wpm, accuracy, score, mode, difficulty, category } = req.body;
 
-        // Validation
-        if (!wpm || !accuracy) {
-            return res.status(400).json({ error: 'Incomplete score data' });
+        // Strict Validation for production
+        if (typeof wpm !== 'number' || typeof accuracy !== 'number') {
+            return res.status(400).json({ error: 'Invalid or incomplete score telemetry' });
         }
 
-        const newScore = {
+        const newScore = new Score({
             userId: userId || 'anonymous',
+            username: username || 'Operator',
             wpm,
             accuracy,
-            mode: mode || 'classic',
-            difficulty: difficulty || 'medium',
-            createdAt: new Date().toISOString()
-        };
+            score: score || Math.round(wpm * (accuracy / 100)),
+            mode: mode || 'words',
+            difficulty: difficulty || 'normal',
+            category: category || 'General'
+        });
 
-        scores.push(newScore);
-        res.status(201).json({ message: 'Score saved successfully', score: newScore });
+        await newScore.save();
+        res.status(201).json({
+            message: 'Synchronization Complete',
+            id: newScore._id
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Server error saving score' });
+        console.error(`❌ SCORE SAVE ERROR: ${error.message}`);
+        res.status(500).json({ error: 'Telemetry storage failed' });
     }
 });
 
 // @route   GET /api/scores/:userId
 // @desc    Get score history for a user
 router.get('/:userId', async (req, res) => {
-    const { userId } = req.params;
-    const userScores = scores.filter(s => s.userId === userId);
-    res.json(userScores);
+    try {
+        const { userId } = req.params;
+        const userScores = await Score.find({ userId })
+            .sort({ createdAt: -1 })
+            .limit(50);
+        res.json(userScores);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve history' });
+    }
 });
 
 export default router;

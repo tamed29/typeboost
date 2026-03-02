@@ -3,21 +3,32 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// In production, use a service account key file via GOOGLE_APPLICATION_CREDENTIALS
-// For local development, we'll initialize with env variables or a local json path
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
-    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
-    : null;
+/**
+ * Initialize Firebase Admin for production-grade security.
+ * Requires FIREBASE_SERVICE_ACCOUNT_KEY in environment.
+ */
+const initializeFirebase = () => {
+    try {
+        const saKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
-if (serviceAccount) {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
-    });
-    console.log('✅ Firebase Admin initialized');
-} else {
-    console.warn('⚠️ Firebase Admin not initialized. Provide FIREBASE_SERVICE_ACCOUNT_KEY in .env');
-}
+        if (!saKey) {
+            console.warn('⚠️  WARNING: FIREBASE_SERVICE_ACCOUNT_KEY missing. Admin operations disabled.');
+            return null;
+        }
 
-export const db = admin.firestore?.();
-export const auth = admin.auth?.();
+        const serviceAccount = JSON.parse(saKey);
+
+        return admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+        });
+    } catch (error) {
+        console.error(`❌ CRITICAL: Failed to parse Firebase Service Account: ${error.message}`);
+        return null;
+    }
+};
+
+const app = initializeFirebase();
+
+export const db = app ? admin.firestore() : null;
+export const auth = app ? admin.auth() : null;
 export default admin;
