@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-background: var(--bg);
+  --color-text: var(--text);
+  --color-sub: var(--sub);
+}
+
+:root {
+  /* Default Theme: Faded Blue + Deep Slate */
+  --bg: #0f172a;
+  --text: #f8fafc;
+  --primary: #38bdf8;
+  --secondary: #94a3b8;
+  --caret: #38bdf8;
+  --sub: #1e293b;
+  --border-sub: rgba(56, 189, 248, 0.1);
+  --bg-sub-subtle: rgba(30, 41, 59, 0.5);
+}
+
+/* Theme Classes - High Visibility 2-Color Professional Combinations */
+.theme-carbon {
+  --bg: #121212;
+  --text: #f5f5f5;
+  --primary: #e0e0e0;
+  --secondary: #a0a0a0;
+  --caret: #e0e0e0;
+  --sub: #1a1a1a;
+  --border-sub: rgba(224, 224, 224, 0.1);
+  --bg-sub-subtle: rgba(26, 26, 26, 0.5);
+}
+
+.theme-serika {
+  --bg: #2d2e30;
+  --text: #f8f8f2;
+  --primary: #d1b03c;
+  --secondary: #a8a8a2;
+  --caret: #d1b03c;
+  --sub: #252628;
+  --border-sub: rgba(209, 176, 60, 0.1);
+  --bg-sub-subtle: rgba(37, 38, 40, 0.5);
+}
+
+.theme-lavender {
+  --bg: #1e1b2e;
+  --text: #f3e8ff;
+  --primary: #c084fc;
+  --secondary: #a8a2c8;
+  --caret: #c084fc;
+  --sub: #2a2440;
+  --border-sub: rgba(192, 132, 252, 0.1);
+  --bg-sub-subtle: rgba(42, 36, 64, 0.5);
+}
+
+.theme-midnight {
+  --bg: #080b0f;
+  --text: #f0f9ff;
+  --primary: #38bdf8;
+  --secondary: #94a3b8;
+  --caret: #38bdf8;
+  --sub: #111827;
+  --border-sub: rgba(56, 189, 248, 0.1);
+  --bg-sub-subtle: rgba(17, 24, 39, 0.5);
+}
+
+.theme-matrix {
+  --bg: #000500;
+  --text: #e0ffe0;
+  --primary: #00ff41;
+  --secondary: #00b300;
+  --caret: #00ff41;
+  --sub: #001a00;
+  --border-sub: rgba(0, 255, 65, 0.1);
+  --bg-sub-subtle: rgba(0, 26, 0, 0.5);
+}
+
+.theme-tokyo {
+  --bg: #1a1b26;
+  --text: #c0caf5;
+  --primary: #f7768e;
+  --secondary: #9aa5ce;
+  --caret: #f7768e;
+  --sub: #24283b;
+  --border-sub: rgba(247, 118, 142, 0.1);
+  --bg-sub-subtle: rgba(36, 40, 59, 0.5);
+}
+
+.theme-aurora {
+  --bg: #01161e;
+  --text: #ccffeb;
+  --primary: #10b981;
+  --secondary: #6ee7b7;
+  --caret: #10b981;
+  --sub: #082a32;
+  --border-sub: rgba(16, 185, 129, 0.1);
+  --bg-sub-subtle: rgba(8, 42, 50, 0.5);
+}
+
+.theme-neon {
+  --bg: #0f172a;
+  --text: #e0f2fe;
+  --primary: #06b6d4;
+  --secondary: #94a3b8;
+  --caret: #06b6d4;
+  --sub: #161e2e;
+  --border-sub: rgba(6, 182, 212, 0.1);
+  --bg-sub-subtle: rgba(22, 30, 46, 0.5);
+}
+
+.theme-coffee {
+  --bg: #1c140d;
+  --text: #f5ebe0;
+  --primary: #d97706;
+  --secondary: #d6ccc2;
+  --caret: #d97706;
+  --sub: #291e14;
+  --border-sub: rgba(217, 119, 6, 0.1);
+  --bg-sub-subtle: rgba(41, 30, 20, 0.5);
+}
+
+.theme-ghost {
+  --bg: #ffffff;
+  --text: #1e293b;
+  --primary: #3b82f6;
+  --secondary: #64748b;
+  --caret: #3b82f6;
+  --sub: #f1f5f9;
+  --border-sub: rgba(59, 130, 246, 0.1);
+  --bg-sub-subtle: rgba(241, 245, 249, 0.8);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+html {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Non-scrollable Header Layout */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: transparent;
+  width: 100%;
+}
+
+/* Professional Typography */
+h1,
+h2,
+h3,
+h4 {
+  color: var(--text);
+  transition: color 0.5s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 20px;
+}
+
+/* Monkeytype Caret Animation */
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  position: relative;
+}
+
+.caret::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 2px;
+  background-color: var(--caret);
+  animation: blink 1.2s step-end infinite;
+}
+
+/* Typing Arena - Responsive & Muted */
+.typing-arena {
+  max-height: 180px;
+  overflow: hidden;
+  line-height: 1.7;
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  position: relative;
+  transition: opacity 0.4s ease;
+  width: 100%;
+}
+
+/* Desktop wide view */
+@media (min-width: 1024px) {
+  .typing-arena {
+    font-size: 1.6rem;
+    max-height: 220px;
+  }
+}
+
+/* Logo & Text Gradient Support */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  header {
+    padding: 1.5rem !important;
+  }
+
+  .nav-icon {
+    padding: 0.5rem !important;
+  }
+
+  .typing-arena {
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+}
+
+/* Theme sync for all elements */
+* {
+  border-color: var(--border-sub);
+  transition: border-color 0.5s ease, background-color 0.5s ease;
+}
