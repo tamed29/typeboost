@@ -15,7 +15,7 @@ const Leaderboard = () => {
                 // Fetch top 20 scores
                 const q = query(
                     collection(db, 'scores'),
-                    orderBy('wpm', 'desc'),
+                    orderBy('score', 'desc'),
                     limit(20)
                 );
                 const querySnapshot = await getDocs(q);
@@ -98,8 +98,8 @@ const Leaderboard = () => {
                     <div className="hidden lg:grid grid-cols-12 gap-4 px-10 py-6 bg-background/20 font-mono text-[9px] uppercase tracking-[0.5em] text-secondary opacity-70">
                         <div className="col-span-1">RANK</div>
                         <div className="col-span-5">OPERATIVE SIGNATURE</div>
+                        <div className="col-span-3 text-right">LINK SCORE</div>
                         <div className="col-span-3 text-right">VELOCITY (WPM)</div>
-                        <div className="col-span-3 text-right">PRECISION (ACC)</div>
                     </div>
 
                     {scores.map((score, index) => (
@@ -130,16 +130,16 @@ const Leaderboard = () => {
                             </div>
 
                             <div className="col-span-3 flex flex-col lg:items-end items-center w-full lg:w-auto">
-                                <span className="text-4xl font-black italic text-primary tracking-tighter group-hover:scale-110 duration-500 transition-transform">{score.wpm}</span>
-                                <span className="text-[8px] font-mono text-secondary uppercase tracking-[0.2em] opacity-20">Link_Velocity</span>
+                                <span className="text-4xl font-black italic text-primary tracking-tighter group-hover:scale-110 duration-500 transition-transform">{score.score || Math.round(score.wpm * (score.accuracy / 100))}</span>
+                                <span className="text-[8px] font-mono text-secondary uppercase tracking-[0.2em] opacity-20">Link_Score</span>
                             </div>
 
                             <div className="col-span-3 flex flex-col lg:items-end items-center w-full lg:w-auto">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xl font-bold text-text opacity-60 italic">{score.accuracy}</span>
-                                    <span className="text-[9px] font-mono text-secondary opacity-40">%</span>
+                                    <span className="text-xl font-bold text-text opacity-60 italic">{score.wpm}</span>
+                                    <span className="text-[9px] font-mono text-secondary opacity-40">WPM</span>
                                 </div>
-                                <span className="text-[8px] font-mono text-secondary uppercase tracking-[0.2em] opacity-20">Neural_Fidelity</span>
+                                <span className="text-[8px] font-mono text-secondary uppercase tracking-[0.2em] opacity-20">Velocity</span>
                             </div>
 
                             {index < 3 && (

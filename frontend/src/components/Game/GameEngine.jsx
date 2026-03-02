@@ -2,46 +2,20 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { doc, setDoc, collection, addDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
-import { playCountdownBeep, playFinishBeep } from '../../utils/audio';
+import { playCountdownBeep, playFinishBeep, playBeep } from '../../utils/audio';
+import { generateWords, QUOTES } from '../../utils/words';
 import {
     Timer,
     Type,
     Quote,
     Activity,
-    Settings2,
-    Hash,
-    AtSign,
-    ChevronDown,
     Keyboard as KeyIcon,
     Zap,
-    RotateCcw
+    RotateCcw,
+    ShieldAlert,
+    Cpu,
+    TrendingUp
 } from 'lucide-react';
-
-const WORDS_BASE = [
-    "the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog",
-    "programming", "javascript", "react", "tailwind", "performance", "architecture",
-    "developer", "backend", "frontend", "optimization", "asynchronous", "interface",
-    "scalability", "deployment", "configuration", "authentication", "dashboard", "analytics"
-];
-
-const PUNCTUATION = [".", ",", "!", "?", ";", ":", "-", "(", ")", "\"", "'"];
-const NUMBERS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-
-const QUOTES = [
-    "The only way to do great work is to love what you do.",
-    "Innovation distinguishes between a leader and a follower.",
-    "Stay hungry, stay foolish.",
-    "Talk is cheap. Show me the code.",
-    "Programs must be written for people to read, and only incidentally for machines to execute.",
-    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-    "First, solve the problem. Then, write the code.",
-    "Experience is the name everyone gives to their mistakes.",
-    "In order to be irreplaceable, one must always be different.",
-    "Knowledge is power.",
-    "Simplicity is the soul of efficiency.",
-    "Make it work, make it right, make it fast.",
-    "Code is like humor. When you have to explain it, it's bad."
-];
 
 const GameEngine = ({ theme, settings }) => {
     const [mode, setMode] = useState('words');
@@ -60,11 +34,16 @@ const GameEngine = ({ theme, settings }) => {
     const [gameStarted, setGameStarted] = useState(false);
     const [chances, setChances] = useState(1);
     const [showWarning, setShowWarning] = useState(false);
+    const [wpmHistory, setWpmHistory] = useState([]);
+    const [isBooting, setIsBooting] = useState(true);
 
-    // Computed lock state
     const isConfigLocked = gameStarted && !isFinished;
-
     const inputRef = useRef(null);
+
+    useEffect(() => {
+        const bootSequence = setTimeout(() => setIsBooting(false), 800);
+        return () => clearTimeout(bootSequence);
+    }, []);
 
     useEffect(() => {
         generateNewWords();
@@ -72,16 +51,10 @@ const GameEngine = ({ theme, settings }) => {
 
     useEffect(() => {
         const handleGlobalAction = () => {
-            if (!isFinished) {
-                inputRef.current?.focus();
-            }
+            if (!isFinished) inputRef.current?.focus();
         };
         window.addEventListener('click', handleGlobalAction);
-        window.addEventListener('touchstart', handleGlobalAction);
-        return () => {
-            window.removeEventListener('click', handleGlobalAction);
-            window.removeEventListener('touchstart', handleGlobalAction);
-        };
+        return () => window.removeEventListener('click', handleGlobalAction);
     }, [isFinished]);
 
     useEffect(() => {
@@ -98,36 +71,28 @@ const GameEngine = ({ theme, settings }) => {
                     }
                     return next;
                 });
+
+                // Update real-time WPM for tracking
+                const timeElapsed = (Date.now() - startTime) / 60000;
+                const fullText = wordList.join(' ');
+                const correctChars = inputValue.split('').filter((c, i) => c === fullText[i]).length;
+                const currentWpm = Math.round((correctChars / 5) / timeElapsed) || 0;
+                setWpmHistory(prev => [...prev, currentWpm]);
+                setStats(prev => ({ ...prev, wpm: currentWpm }));
             }, 1000);
         }
         return () => clearInterval(timer);
-    }, [gameStarted, startTime, isFinished]);
-
-    useEffect(() => {
-        if (!isFinished) {
-            const timeout = setTimeout(() => {
-                inputRef.current?.focus();
-            }, 100);
-            return () => clearTimeout(timeout);
-        }
-    }, [isFinished, wordList]);
+    }, [gameStarted, startTime, isFinished, inputValue, wordList]);
 
     const generateNewWords = () => {
+        setIsBooting(true);
         if (mode === 'quote') {
             const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
             setWordList(randomQuote.split(' '));
         } else {
-            let pool = [...WORDS_BASE];
             const count = mode === 'words' ? wordCount : 100;
-
-            const randomWords = [...Array(count)].map(() => {
-                let word = pool[Math.floor(Math.random() * pool.length)];
-                if (includeNumbers && Math.random() > 0.8) word += NUMBERS[Math.floor(Math.random() * NUMBERS.length)];
-                if (includePunctuation && Math.random() > 0.7) word += PUNCTUATION[Math.floor(Math.random() * PUNCTUATION.length)];
-                return word;
-            });
-
-            setWordList(randomWords);
+            const words = generateWords(mode, count, { includePunctuation, includeNumbers });
+            setWordList(words);
         }
 
         setInputValue('');
@@ -135,19 +100,16 @@ const GameEngine = ({ theme, settings }) => {
         setIsFinished(false);
         setSaveError(false);
         setGameStarted(false);
-        // Initialize timeLeft based on mode
-        if (mode === 'time') {
-            setTimeLeft(duration);
-        } else if (mode === 'words' || mode === 'quote') {
-            setTimeLeft(15); // Set to 15 seconds for words/quote mode
-        } else {
-            setTimeLeft(0); // Zen mode or other modes might not have a timer
-        }
+        setWpmHistory([]);
+        setTimeLeft(mode === 'time' ? duration : 15);
         setStats({ wpm: 0, accuracy: 100, errors: 0 });
         setChances(settings.difficulty === 'master' ? 1 : 0);
         setShowWarning(false);
 
-        setTimeout(() => inputRef.current?.focus(), 10);
+        setTimeout(() => {
+            setIsBooting(false);
+            inputRef.current?.focus();
+        }, 400);
     };
 
     const handleInputChange = (e) => {
@@ -160,22 +122,19 @@ const GameEngine = ({ theme, settings }) => {
         }
 
         const fullText = wordList.join(' ');
-
         let errors = 0;
         for (let i = 0; i < val.length; i++) {
             if (val[i] !== fullText[i]) errors++;
         }
 
         if (errors > stats.errors) {
-            if (settings.difficulty === 'expert') {
-                // Expert Mode: Block progress if character is wrong
-                return;
-            }
+            playBeep(200, 50, 0.05, 'square');
+            if (settings.difficulty === 'expert') return;
             if (settings.difficulty === 'master') {
                 if (chances > 0) {
                     setChances(0);
                     setShowWarning(true);
-                    setTimeout(() => setShowWarning(false), 3000);
+                    setTimeout(() => setShowWarning(false), 2000);
                 } else {
                     finishGame(val, errors);
                     return;
@@ -183,7 +142,8 @@ const GameEngine = ({ theme, settings }) => {
             }
         }
 
-        setStats(prev => ({ ...prev, errors }));
+        const calculatedAccuracy = Math.round(((val.length - errors) / Math.max(1, val.length)) * 100);
+        setStats(prev => ({ ...prev, errors, accuracy: Math.max(0, calculatedAccuracy) }));
         setInputValue(val);
 
         if ((mode === 'words' || mode === 'quote') && val.length >= fullText.length) {
@@ -191,224 +151,210 @@ const GameEngine = ({ theme, settings }) => {
         }
     };
 
-    const handleKeyDown = (e) => {
-        if (settings.quickRestart === 'tab' && e.key === 'Tab') {
-            e.preventDefault();
-            generateNewWords();
-        }
-    };
-
     const finishGame = async (finalVal = inputValue, finalErrors = stats.errors) => {
         if (isFinished) return;
         setIsFinished(true);
+        playFinishBeep();
+
         const timeElapsed = Math.max(0.1, (Date.now() - (startTime || Date.now())) / 60000);
         const fullText = wordList.join(' ');
         const correctChars = finalVal.split('').filter((c, i) => c === fullText[i]).length;
         const finalWpm = Math.round((correctChars / 5) / timeElapsed) || 0;
         const finalAccuracy = Math.round(((finalVal.length - finalErrors) / Math.max(1, finalVal.length)) * 100);
 
-        setStats({ wpm: finalWpm, accuracy: Math.max(0, finalAccuracy), errors: finalErrors });
-        playFinishBeep();
+        const difficultyMultiplier = settings.difficulty === 'master' ? 1.5 : (settings.difficulty === 'expert' ? 1.2 : 1);
+        const finalScore = Math.round(finalWpm * (finalAccuracy / 100) * difficultyMultiplier);
 
-        let category = '';
-        if (mode === 'time') category = `${duration}s`;
-        else if (mode === 'words') category = `${wordCount}w`;
-        else category = 'quote';
+        setStats({ wpm: finalWpm, accuracy: Math.max(0, finalAccuracy), errors: finalErrors });
 
         if (auth.currentUser && finalWpm > 0) {
             try {
-                // Optimized username fetch or fallback
-                const username = auth.currentUser?.displayName || auth.currentUser?.email?.split('@')[0] || 'Unknown';
-
-                await addDoc(collection(db, 'scores'), {
+                const username = auth.currentUser?.displayName || auth.currentUser?.email?.split('@')[0] || 'Operator';
+                const scoreData = {
                     userId: auth.currentUser.uid,
-                    username: username,
+                    username,
                     wpm: finalWpm,
                     accuracy: Math.max(0, finalAccuracy),
                     errors: finalErrors,
-                    score: Math.round(finalWpm * (finalAccuracy / 100)),
+                    score: finalScore,
                     mode,
-                    category,
+                    category: mode === 'time' ? `${duration}s` : (mode === 'words' ? `${wordCount}w` : 'quote'),
                     createdAt: serverTimestamp()
-                });
+                };
 
-                // 2. Update User Summary (For fast profile loading & Stats persistence)
+                await addDoc(collection(db, 'scores'), scoreData);
                 const userRef = doc(db, 'users', auth.currentUser.uid);
                 const userSnap = await getDoc(userRef);
                 const currentData = userSnap.exists() ? userSnap.data() : {};
                 const currentStats = currentData.stats || { bestWpm: 0, totalGames: 0, avgWpm: 0, avgAccuracy: 0 };
 
-                const newTotalGames = (currentStats.totalGames || 0) + 1;
-                const newAvgWpm = Math.round(((currentStats.avgWpm || 0) * (currentStats.totalGames || 0) + finalWpm) / newTotalGames);
-                const newAvgAcc = Math.round(((currentStats.avgAccuracy || 0) * (currentStats.totalGames || 0) + finalAccuracy) / newTotalGames);
-
                 await setDoc(userRef, {
                     stats: {
                         bestWpm: Math.max(currentStats.bestWpm || 0, finalWpm),
-                        totalGames: newTotalGames,
-                        avgWpm: newAvgWpm,
-                        avgAccuracy: newAvgAcc,
+                        totalGames: (currentStats.totalGames || 0) + 1,
+                        avgWpm: Math.round(((currentStats.avgWpm || 0) * (currentStats.totalGames || 0) + finalWpm) / ((currentStats.totalGames || 0) + 1)),
+                        avgAccuracy: Math.round(((currentStats.avgAccuracy || 0) * (currentStats.totalGames || 0) + finalAccuracy) / ((currentStats.totalGames || 0) + 1)),
                         lastWpm: finalWpm,
                         lastAccuracy: finalAccuracy,
                         updatedAt: serverTimestamp()
                     }
                 }, { merge: true });
-
             } catch (err) {
-                if (err.code === 'permission-denied') {
-                    setSaveError(true);
-                }
-                console.warn("Telemetry Sync Restricted:", err.code);
+                if (err.code === 'permission-denied') setSaveError(true);
+                console.error("Sync Error:", err);
             }
         }
     };
 
-    const ModeButton = ({ id, icon: Icon, label }) => (
-        <button
-            onClick={() => !isConfigLocked && setMode(id)}
-            disabled={isConfigLocked}
-            className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all ${mode === id ? 'text-primary' : 'text-secondary hover:text-text'} ${isConfigLocked ? 'cursor-not-allowed' : ''}`}
-        >
-            <Icon size={12} className="md:w-3.5 md:h-3.5" />
-            <span className="text-[8px] md:text-[10px] uppercase font-black tracking-[0.2em]">{label}</span>
-        </button>
-    );
-
     return (
-        <div className="flex flex-col gap-20 md:gap-32 w-full py-10">
-            <div className={`flex justify-center flex-wrap items-center gap-2 md:gap-4 bg-sub p-2 md:p-4 rounded-3xl md:rounded-[2.5rem] self-center max-w-full transition-all duration-500 ${isConfigLocked ? 'opacity-30 pointer-events-none grayscale' : ''}`}>
-                <div className="flex items-center gap-1 md:gap-2 pr-3 md:pr-6 border-r border-primary/10">
-                    <button onClick={() => !isConfigLocked && setIncludePunctuation(!includePunctuation)} className={`text-[8px] md:text-[9px] font-mono px-2 md:px-3 py-1.5 rounded-lg transition-all ${includePunctuation ? 'text-primary' : 'text-secondary/40 hover:text-secondary'}`}>
-                        @ punct
+        <div className="flex flex-col gap-12 md:gap-24 w-full py-6 select-none">
+            {/* Top Toolbar */}
+            <div className={`flex justify-center flex-wrap items-center gap-4 bg-sub/40 backdrop-blur-md p-3 md:p-5 rounded-[2.5rem] self-center border border-white/5 transition-all duration-700 ${isConfigLocked ? 'opacity-20 grayscale pointer-events-none scale-95 blur-sm' : ''}`}>
+                <div className="flex items-center gap-2 pr-6 border-r border-white/5">
+                    <button onClick={() => setIncludePunctuation(!includePunctuation)} className={`px-3 py-2 rounded-xl font-mono text-[10px] transition-all uppercase tracking-tighter ${includePunctuation ? 'bg-primary/20 text-primary' : 'text-secondary/40 hover:text-secondary'}`}>
+                        @ symbols
                     </button>
-                    <button onClick={() => !isConfigLocked && setIncludeNumbers(!includeNumbers)} className={`text-[8px] md:text-[9px] font-mono px-2 md:px-3 py-1.5 rounded-lg transition-all ${includeNumbers ? 'text-primary' : 'text-secondary/40 hover:text-secondary'}`}>
-                        # nums
+                    <button onClick={() => setIncludeNumbers(!includeNumbers)} className={`px-3 py-2 rounded-xl font-mono text-[10px] transition-all uppercase tracking-tighter ${includeNumbers ? 'bg-primary/20 text-primary' : 'text-secondary/40 hover:text-secondary'}`}>
+                        # digits
                     </button>
                 </div>
-                <div className="flex items-center gap-1 md:gap-3 px-3 md:px-6 border-r border-primary/10">
-                    <ModeButton id="time" icon={Timer} label="time" />
-                    <ModeButton id="words" icon={Type} label="words" />
-                    <ModeButton id="quote" icon={Quote} label="quote" />
-                    <ModeButton id="zen" icon={Activity} label="zen" />
+                <div className="flex items-center gap-1 md:gap-3 px-6 border-r border-white/5">
+                    <ModeButton id="time" icon={Timer} label="Chronos" active={mode === 'time'} onClick={() => setMode('time')} />
+                    <ModeButton id="words" icon={Type} label="Lexicon" active={mode === 'words'} onClick={() => setMode('words')} />
+                    <ModeButton id="quote" icon={Quote} label="Wisdom" active={mode === 'quote'} onClick={() => setMode('quote')} />
+                    <ModeButton id="zen" icon={Activity} label="Zen" active={mode === 'zen'} onClick={() => setMode('zen')} />
                 </div>
-                <div className="flex items-center gap-1 md:gap-2 pl-3 md:pl-6">
-                    {(mode === 'time' ? [20, 30, 60, 120] : [10, 25, 50, 100]).map(val => (
-                        <button key={val} onClick={() => !isConfigLocked && (mode === 'time' ? setDuration(val) : setWordCount(val))} className={`text-[9px] md:text-[10px] font-mono px-2 md:px-3 py-1 rounded-lg transition-all ${(mode === 'time' ? duration === val : wordCount === val) ? 'text-primary' : 'text-secondary/30 hover:text-secondary'}`}>
+                <div className="flex items-center gap-2 pl-6">
+                    {(mode === 'time' ? [15, 30, 60, 120] : [10, 25, 50, 100]).map(val => (
+                        <button key={val} onClick={() => (mode === 'time' ? setDuration(val) : setWordCount(val))} className={`w-10 h-10 flex items-center justify-center rounded-xl font-mono text-[11px] transition-all ${(mode === 'time' ? duration === val : wordCount === val) ? 'bg-primary text-background font-black' : 'text-secondary/40 hover:bg-white/5 hover:text-secondary'}`}>
                             {val}
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className="relative cursor-text w-full flex flex-col items-center min-h-[150px] mt-8 md:mt-0" onClick={() => !isFinished && inputRef.current?.focus()}>
-                {(mode === 'time' || mode === 'words' || mode === 'quote') && !isFinished && (
-                    <div className="flex flex-col items-center gap-4">
-                        <div className={`text-2xl md:text-[2rem] font-bold transition-all tabular-nums ${gameStarted ? (timeLeft <= 5 ? 'text-rose-500 animate-pulse scale-125' : 'text-primary') : 'text-primary/30'}`}>
-                            {timeLeft}s
+            {/* Main Arena */}
+            <div className="relative w-full flex flex-col items-center min-h-[300px]" onClick={() => !isFinished && inputRef.current?.focus()}>
+                {!isFinished && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-8 mb-16">
+                        <div className="flex items-end gap-12">
+                            <div className="flex flex-col items-center">
+                                <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-2 opacity-40">System Signal</span>
+                                <div className={`text-5xl font-black font-cyber tabular-nums transition-all ${gameStarted ? (timeLeft <= 5 ? 'text-rose-500 animate-pulse' : 'text-primary') : 'text-primary/20'}`}>
+                                    {timeLeft}<span className="text-xl ml-1">S</span>
+                                </div>
+                            </div>
+                            {gameStarted && (
+                                <div className="flex flex-col items-center">
+                                    <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-2 opacity-40">Current Velocity</span>
+                                    <div className="text-5xl font-black font-cyber text-text animate-in fade-in slide-in-from-bottom-2">
+                                        {stats.wpm}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         {settings.difficulty !== 'normal' && (
-                            <div className="flex flex-col items-center gap-2">
-                                <div className="px-3 py-1 rounded-full border border-rose-500/20 bg-rose-500/5 text-rose-500 text-[8px] font-black uppercase tracking-widest animate-pulse">
-                                    {settings.difficulty} MODE
+                            <div className="flex gap-4">
+                                <div className="px-5 py-2 rounded-full border border-rose-500/20 bg-rose-500/5 text-rose-500 text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 shadow-lg shadow-rose-500/10">
+                                    <ShieldAlert size={14} />
+                                    {settings.difficulty} Protocol Active
                                 </div>
-                                {settings.difficulty === 'master' && (
-                                    <div className="text-[10px] font-mono text-secondary uppercase tracking-widest flex items-center gap-2">
-                                        Chances: <span className={chances > 0 ? 'text-primary' : 'text-rose-500'}>{chances}</span>
-                                    </div>
-                                )}
                             </div>
                         )}
-                        <AnimatePresence>
-                            {showWarning && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0 }}
-                                    className="absolute top-full mt-4 px-6 py-2 bg-rose-500 text-white text-[10px] font-black italic uppercase tracking-widest rounded-full shadow-lg shadow-rose-500/20"
-                                >
-                                    CRITICAL ERROR // ONE CHANCE REMAINING
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                )}
-                {!isFinished ? (
-                    <div className={`typing-arena font-mono tracking-wider select-none text-center ${settings.blindMode ? 'opacity-0' : ''}`}>
-                        {wordList.join(' ').split('').map((char, i) => {
-                            let statusClasses = 'text-secondary/30';
-                            if (i < inputValue.length) {
-                                statusClasses = inputValue[i] === char ? 'text-text opacity-100' : 'text-rose-400 bg-rose-400/5 px-0.5 rounded-sm';
-                            } else if (i === inputValue.length) {
-                                statusClasses = 'caret';
-                            }
-                            return <span key={i} className={`${statusClasses} transition-colors duration-100`}>{char}</span>;
-                        })}
-                    </div>
-                ) : (
-                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10 w-full max-w-4xl space-y-16 z-50 relative">
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                            <StatBox label="Velocity" value={stats.wpm} sub="WPM" color="text-primary" />
-                            <StatBox label="Precision" value={stats.accuracy} sub="%" color="text-text" />
-                            <StatBox label="Entropy" value={stats.errors} sub="ERR" color="text-secondary" />
-                            <StatBox label="Mode" value={mode} sub="SYS" color="text-secondary/50" />
-                        </div>
-
-                        <AnimatePresence>
-                            {saveError && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="flex items-center justify-center gap-4 bg-rose-500/10 border border-rose-500/20 py-4 px-8 rounded-2xl max-w-md mx-auto"
-                                >
-                                    <Zap size={16} className="text-rose-500 animate-pulse" />
-                                    <div className="text-left">
-                                        <p className="text-[10px] font-black uppercase text-rose-500 tracking-widest">Telemetry Sync Blocked</p>
-                                        <p className="text-[8px] font-mono text-secondary uppercase tracking-widest opacity-60">Score not saved to cloud infrastructure. Update Firestore Rules.</p>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <div className="flex justify-center items-center">
-                            <button
-                                onClick={generateNewWords}
-                                title="Restart Game"
-                                className="p-4 md:p-6 bg-sub text-secondary hover:text-primary rounded-2xl md:rounded-[2rem] border border-border-sub hover:border-primary/30 transition-all group active:rotate-180 duration-500 shadow-xl"
-                            >
-                                <KeyIcon size={24} className="md:w-8 md:h-8" />
-                            </button>
-                        </div>
                     </motion.div>
                 )}
+
+                <AnimatePresence mode="wait">
+                    {isBooting ? (
+                        <motion.div key="boot" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4 py-12">
+                            <Cpu className="text-primary animate-spin-slow" size={40} />
+                            <span className="font-mono text-[10px] text-primary uppercase tracking-[1em] animate-pulse ml-[1em]">INITIALIZING_NODE...</span>
+                        </motion.div>
+                    ) : !isFinished ? (
+                        <motion.div key="arena" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`typing-arena font-mono tracking-widest leading-relaxed text-center max-w-5xl px-8 transition-opacity duration-1000 ${settings.blindMode ? 'opacity-0' : 'opacity-100'}`}>
+                            {wordList.join(' ').split('').map((char, i) => {
+                                let colors = 'text-secondary/20';
+                                if (i < inputValue.length) {
+                                    colors = inputValue[i] === char ? 'text-text opacity-100' : 'text-rose-500 bg-rose-500/10 px-0.5 rounded-sm';
+                                } else if (i === inputValue.length) {
+                                    colors = 'caret text-primary';
+                                }
+                                return <span key={i} className={`${colors} transition-colors duration-75`}>{char}</span>;
+                            })}
+                        </motion.div>
+                    ) : (
+                        <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-16 py-10 w-full">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-6xl">
+                                <ResultCard label="Velocity" value={stats.wpm} unit="WPM" icon={Zap} color="text-primary" />
+                                <ResultCard label="Precision" value={stats.accuracy} unit="%" icon={TrendingUp} color="text-text" />
+                                <ResultCard label="Chaos" value={stats.errors} unit="ERR" icon={ShieldAlert} color="text-rose-500" />
+                                <ResultCard label="Protocol" value={mode.toUpperCase()} unit="MODE" icon={Cpu} color="text-secondary" />
+                            </div>
+
+                            {saveError && (
+                                <div className="p-6 rounded-3xl bg-rose-500/5 border border-rose-500/20 flex gap-5 items-center max-w-lg">
+                                    <ShieldAlert className="text-rose-500" />
+                                    <div className="text-left">
+                                        <p className="text-xs font-black uppercase text-rose-500 tracking-widest">Telemetry Error</p>
+                                        <p className="text-[10px] font-mono text-secondary opacity-60">System failed to synchronize genomic data with cloud mainframe.</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            <button onClick={generateNewWords} className="group p-8 bg-sub/50 hover:bg-primary transition-all rounded-[3rem] border border-white/5 hover:border-primary/50 shadow-2xl relative">
+                                <RotateCcw size={32} className="group-hover:rotate-180 transition-transform duration-700 text-secondary group-hover:text-background" />
+                                <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <input
                     ref={inputRef}
                     type="text"
-                    className={`absolute inset-0 opacity-0 w-full h-full cursor-text ${isFinished ? 'z-0 invisible' : 'z-30'}`}
+                    className="absolute inset-0 opacity-0 cursor-default pointer-events-none"
                     onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={(e) => settings.quickRestart === 'tab' && e.key === 'Tab' && (e.preventDefault(), generateNewWords())}
                     value={inputValue}
                     spellCheck="false"
                     autoComplete="off"
-                    inputMode="text"
+                    autoFocus
                 />
             </div>
 
-            <div className="flex justify-center items-center gap-16 opacity-30 text-[9px] font-mono text-secondary uppercase tracking-[0.5em] pt-12">
-                <span className="flex items-center gap-2"><KeyIcon size={12} /> {settings.quickRestart} restart</span>
-                <span className="flex items-center gap-2"><Zap size={10} className="text-primary" /> Signal Active</span>
+            <div className="mt-20 flex justify-center gap-12 opacity-20 pointer-events-none">
+                <StatusIndicator label="Signal" value="Active" />
+                <StatusIndicator label="Node" value="0x7F22" />
+                <StatusIndicator label="Sync" value="Stable" />
             </div>
         </div>
     );
 };
 
-const StatBox = ({ label, value, sub, color }) => (
-    <div className="flex flex-col items-center p-6 md:p-10 bg-sub rounded-3xl md:rounded-[3rem] w-full max-w-[140px] md:max-w-none">
-        <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.2em] md:tracking-[0.5em] mb-2 md:mb-6 opacity-60 text-center">{label}</span>
-        <div className="flex items-baseline gap-1 md:gap-3">
-            <span className={`text-5xl md:text-6xl font-black italic tracking-tighter ${color}`}>{value}</span>
-            <span className="text-[8px] md:text-[10px] font-mono text-secondary opacity-60 uppercase">{sub}</span>
+const ModeButton = ({ icon: Icon, label, active, onClick }) => (
+    <button onClick={onClick} className={`flex items-center gap-3 px-5 py-3 rounded-2xl transition-all border ${active ? 'bg-primary/10 border-primary/20 text-primary' : 'border-transparent text-secondary/50 hover:text-text'}`}>
+        <Icon size={16} />
+        <span className="text-[10px] font-black uppercase tracking-[0.2em]">{label}</span>
+    </button>
+);
+
+const ResultCard = ({ label, value, unit, icon: Icon, color }) => (
+    <div className="bg-sub/30 border border-white/5 p-10 rounded-[3rem] flex flex-col items-center group hover:border-primary/20 transition-all hover:translate-y-[-4px]">
+        <div className="p-4 bg-background rounded-2xl border border-white/5 mb-8 group-hover:text-primary transition-colors">
+            <Icon size={24} />
         </div>
+        <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-6 opacity-40">{label}</span>
+        <div className="flex items-baseline gap-2">
+            <span className={`text-6xl font-black font-cyber italic ${color}`}>{value}</span>
+            <span className="text-xs font-mono text-secondary opacity-30">{unit}</span>
+        </div>
+    </div>
+);
+
+const StatusIndicator = ({ label, value }) => (
+    <div className="flex flex-col items-center font-mono">
+        <span className="text-[8px] uppercase tracking-[0.4em] mb-1">{label}</span>
+        <span className="text-[10px] font-black uppercase tracking-widest text-primary">{value}</span>
     </div>
 );
 

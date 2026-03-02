@@ -49,20 +49,28 @@ const THEMES = [
 ];
 
 const TypeBoostLogo = ({ onClick }) => (
-  <div onClick={onClick} className="flex items-center gap-4 select-none group cursor-pointer">
+  <div onClick={onClick} className="flex items-center gap-5 select-none group cursor-pointer">
     <div className="relative flex items-center justify-center">
-      <div className="w-11 h-11 border-2 border-primary bg-primary/5 rounded-[14px] flex items-center justify-center rotate-3 group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-primary/10">
-        <span className="text-primary font-black text-2xl relative z-10 -rotate-3 group-hover:-rotate-12 transition-all">T</span>
+      <div className="w-12 h-12 border-2 border-primary bg-primary/5 rounded-2xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-all duration-700 shadow-2xl shadow-primary/20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <span className="text-primary font-black font-cyber text-2xl relative z-10 -rotate-3 group-hover:rotate-0 transition-all">T</span>
       </div>
-      <div className="absolute -right-2 -bottom-1 p-1 bg-background rounded-lg border border-border-sub">
-        <Zap className="text-primary fill-primary animate-pulse" size={16} />
+      <div className="absolute -right-2 -top-2">
+        <div className="relative">
+          <Zap className="text-primary fill-primary animate-pulse z-10 relative" size={18} />
+          <div className="absolute inset-0 bg-primary blur-md opacity-50 animate-pulse" />
+        </div>
       </div>
     </div>
-    <div className="flex flex-col -space-y-1">
-      <h1 className="text-2xl font-black italic tracking-tighter text-text group-hover:opacity-80 transition-opacity">
-        TYPE<span className="text-primary">BOOST</span>
+    <div className="flex flex-col">
+      <h1 className="text-2xl font-black italic tracking-tighter text-text group-hover:text-primary transition-colors flex items-baseline">
+        <span className="font-cyber">TYPE</span>
+        <span className="text-primary ml-1">BOOST</span>
       </h1>
-      <span className="text-[9px] font-mono text-secondary uppercase tracking-[0.5em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all">Synchronization Node</span>
+      <div className="flex items-center gap-2">
+        <div className="h-[1px] w-4 bg-primary/40" />
+        <span className="text-[8px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all">Node_v4.2.1</span>
+      </div>
     </div>
   </div>
 );
@@ -302,13 +310,20 @@ function App() {
               {user ? (
                 <GameEngine theme={currentTheme} settings={settings} />
               ) : (
-                <div className="flex flex-col items-center justify-center py-20 bg-sub/30 rounded-[3rem] border border-border-sub gap-6">
-                  <Terminal size={48} className="text-secondary opacity-20" />
-                  <div className="text-center">
-                    <h3 className="text-xl font-black italic uppercase text-text tracking-tighter">Neural Link Required</h3>
-                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40">Please establish a connection to access the protocol.</p>
+                <div className="flex flex-col items-center justify-center py-24 bg-sub/20 rounded-[4rem] border border-white/5 gap-8 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                  <div className="relative">
+                    <Terminal size={64} className="text-primary/20 group-hover:text-primary/40 transition-colors duration-700" />
+                    <div className="absolute inset-0 bg-primary blur-3xl opacity-10 animate-pulse" />
                   </div>
-                  <button onClick={() => setShowAuthModal(true)} className="px-8 py-3 bg-primary text-background font-black uppercase text-[10px] tracking-widest rounded-2xl hover:opacity-90 transition-all">Establish Connection</button>
+                  <div className="text-center relative z-10">
+                    <h3 className="text-2xl font-black italic uppercase text-text tracking-tighter mb-2 font-cyber">Neural Link Required</h3>
+                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] opacity-40">Access to protocol node restricted. Establish connection.</p>
+                  </div>
+                  <button onClick={() => setShowAuthModal(true)} className="relative group/btn px-10 py-4 bg-primary text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
+                    <span className="relative z-10">Establish Connection</span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                  </button>
                 </div>
               )}
             </motion.div>
@@ -333,13 +348,20 @@ function App() {
               {user ? (
                 <ProfilePage theme={currentTheme} userInfo={userInfo} />
               ) : (
-                <div className="flex flex-col items-center justify-center py-20 bg-sub/30 rounded-[3rem] border border-border-sub gap-6">
-                  <User size={48} className="text-secondary opacity-20" />
-                  <div className="text-center">
-                    <h3 className="text-xl font-black italic uppercase text-text tracking-tighter">Identity Verification Required</h3>
-                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40">Please authenticate to view synchronization history.</p>
+                <div className="flex flex-col items-center justify-center py-24 bg-sub/20 rounded-[4rem] border border-white/5 gap-8 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                  <div className="relative">
+                    <User size={64} className="text-primary/20 group-hover:text-primary/40 transition-colors duration-700" />
+                    <div className="absolute inset-0 bg-primary blur-3xl opacity-10 animate-pulse" />
                   </div>
-                  <button onClick={() => setShowAuthModal(true)} className="px-8 py-3 bg-primary text-background font-black uppercase text-[10px] tracking-widest rounded-2xl hover:opacity-90 transition-all">Authenticate Now</button>
+                  <div className="text-center relative z-10">
+                    <h3 className="text-2xl font-black italic uppercase text-text tracking-tighter mb-2 font-cyber">Identity Verification Required</h3>
+                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] opacity-40">Biometric signature mismatch. Please authenticate.</p>
+                  </div>
+                  <button onClick={() => setShowAuthModal(true)} className="relative group/btn px-10 py-4 bg-primary text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
+                    <span className="relative z-10">Authenticate Identity</span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                  </button>
                 </div>
               )}
             </motion.div>

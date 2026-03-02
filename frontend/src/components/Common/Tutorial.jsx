@@ -1,53 +1,80 @@
 import { motion } from 'framer-motion';
+import { Target, Zap, ShieldCheck, ChevronRight } from 'lucide-react';
 
 const Tutorial = () => {
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-12 py-10">
-            <header className="text-center">
-                <h2 className="text-5xl font-black text-white mb-4 tracking-tighter">MISSION BRIEFING</h2>
-                <p className="text-slate-400 font-mono uppercase tracking-[0.3em] text-sm">Welcome to the Elite Typography Program</p>
+        <div className="w-full max-w-5xl mx-auto space-y-20 py-10 select-none">
+            <header className="flex flex-col items-center gap-4">
+                <div className="px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">
+                    Operational Directive
+                </div>
+                <h2 className="text-5xl md:text-6xl font-black text-text italic tracking-tighter uppercase font-cyber">MISSION BRIEFING</h2>
+                <div className="h-px w-32 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <motion.div whileHover={{ y: -5 }} className="bg-slate-900 p-8 rounded-3xl border border-slate-800 text-center">
-                    <div className="w-12 h-12 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 font-bold mx-auto mb-6 text-xl">01</div>
-                    <h3 className="text-lg font-bold mb-3 uppercase tracking-wider text-white">Focus</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">TypeFlow is designed for pure focus. The input is invisible. Just start typing to begin the session.</p>
-                </motion.div>
-
-                <motion.div whileHover={{ y: -5 }} className="bg-slate-900 p-8 rounded-3xl border border-slate-800 text-center">
-                    <div className="w-12 h-12 bg-emerald-600/20 rounded-2xl flex items-center justify-center text-emerald-400 font-bold mx-auto mb-6 text-xl">02</div>
-                    <h3 className="text-lg font-bold mb-3 uppercase tracking-wider text-white">Correction</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">Mistakes turn <span className="text-rose-500 font-bold">RED</span>. Use Backspace to fix them. Accuracy is just as vital as speed in professional environments.</p>
-                </motion.div>
-
-                <motion.div whileHover={{ y: -5 }} className="bg-slate-900 p-8 rounded-3xl border border-slate-800 text-center">
-                    <div className="w-12 h-12 bg-amber-600/20 rounded-2xl flex items-center justify-center text-amber-400 font-bold mx-auto mb-6 text-xl">03</div>
-                    <h3 className="text-lg font-bold mb-3 uppercase tracking-wider text-white">Mastery</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">Aim for constant flow. Your WPM is calculated char-by-char in real-time. Consistency creates elite performance.</p>
-                </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <BriefingCard
+                    step="01"
+                    title="Focus"
+                    icon={Target}
+                    color="text-primary"
+                    desc="TypeFlow is optimized for sensory isolation. The interface is reactive; simply begin typing to initialize the protocol."
+                />
+                <BriefingCard
+                    step="02"
+                    title="Precision"
+                    icon={ShieldCheck}
+                    color="text-rose-500"
+                    desc="System entropy manifests as red-shift. Correct errors immediately using backspace to maintain neural fidelity."
+                />
+                <BriefingCard
+                    step="03"
+                    title="Mastery"
+                    icon={Zap}
+                    color="text-amber-400"
+                    desc="Real-time velocity telemetry filters through the HUD. Consistency and rhythm are the keys to elite performance."
+                />
             </div>
 
-            <div className="bg-blue-600/10 border border-blue-500/20 rounded-3xl p-10 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 font-mono text-[10px] text-blue-500/40 uppercase tracking-widest leading-none">PRACTICE_MODE_ENABLED</div>
-                <h3 className="text-2xl font-black text-blue-400 mb-4 uppercase">Practice Strategy</h3>
-                <ul className="space-y-4 text-slate-300">
-                    <li className="flex gap-4">
-                        <span className="text-blue-500 font-mono">→</span>
-                        <span>Keep your eyes on the screen, not the keys.</span>
-                    </li>
-                    <li className="flex gap-4">
-                        <span className="text-blue-500 font-mono">→</span>
-                        <span>Maintain a rhythm. Speed comes from smoothness.</span>
-                    </li>
-                    <li className="flex gap-4">
-                        <span className="text-blue-500 font-mono">→</span>
-                        <span>Use Easy mode to build muscle memory before jumping to Hard.</span>
-                    </li>
-                </ul>
+            <div className="bg-sub/30 border border-white/5 rounded-[3rem] p-10 md:p-16 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                <div className="absolute top-0 right-0 p-8 font-mono text-[10px] text-primary/20 uppercase tracking-[0.5em] leading-none hidden md:block">PRACTICE_STRATEGY_v4</div>
+
+                <div className="relative z-10 space-y-8">
+                    <h3 className="text-3xl font-black text-primary italic uppercase font-cyber tracking-tight">Tactical Guidelines</h3>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                        <Guideline text="Focus on screen telemetry; avoid visual contact with the physical interface." />
+                        <Guideline text="Develop a rhythmic cadence; velocity is a byproduct of smoothness." />
+                        <Guideline text="Utilize 'Normal' protocol for calibration before attempting 'Expert' or 'Master' nodes." />
+                        <Guideline text="Master the 'Tab' quick-restart key for rapid iteration cycles." />
+                    </ul>
+                </div>
             </div>
         </div>
     );
 };
+
+const BriefingCard = ({ step, title, icon: Icon, desc, color }) => (
+    <motion.div
+        whileHover={{ y: -8, transition: { duration: 0.4 } }}
+        className="bg-sub/50 p-10 rounded-[3rem] border border-white/5 hover:border-primary/20 transition-all group flex flex-col items-center text-center shadow-2xl"
+    >
+        <div className={`w-16 h-16 bg-background rounded-2xl flex items-center justify-center ${color} mb-8 border border-white/5 group-hover:scale-110 transition-transform`}>
+            <Icon size={28} />
+        </div>
+        <span className="text-[10px] font-black font-mono text-secondary/40 uppercase tracking-[0.6em] mb-4">Phase_{step}</span>
+        <h3 className="text-2xl font-black mb-4 uppercase tracking-tight text-white font-cyber">{title}</h3>
+        <p className="text-secondary/60 text-sm leading-relaxed font-medium">{desc}</p>
+    </motion.div>
+);
+
+const Guideline = ({ text }) => (
+    <li className="flex gap-5 items-start">
+        <div className="mt-1 p-1 bg-primary/10 rounded-lg">
+            <ChevronRight size={14} className="text-primary" />
+        </div>
+        <span className="text-secondary leading-relaxed font-medium">{text}</span>
+    </li>
+);
 
 export default Tutorial;
