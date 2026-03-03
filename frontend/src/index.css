@@ -16,6 +16,7 @@
   --bg: #0f172a;
   --text: #f8fafc;
   --primary: #38bdf8;
+  --primary-rgb: 56, 189, 248;
   --secondary: #94a3b8;
   --caret: #38bdf8;
   --sub: #1e293b;
@@ -28,6 +29,7 @@
   --bg: #121212;
   --text: #f5f5f5;
   --primary: #e0e0e0;
+  --primary-rgb: 224, 224, 224;
   --secondary: #a0a0a0;
   --caret: #e0e0e0;
   --sub: #1a1a1a;
@@ -39,6 +41,7 @@
   --bg: #2d2e30;
   --text: #f8f8f2;
   --primary: #d1b03c;
+  --primary-rgb: 209, 176, 60;
   --secondary: #a8a8a2;
   --caret: #d1b03c;
   --sub: #252628;
@@ -50,6 +53,7 @@
   --bg: #1e1b2e;
   --text: #f3e8ff;
   --primary: #c084fc;
+  --primary-rgb: 192, 132, 252;
   --secondary: #a8a2c8;
   --caret: #c084fc;
   --sub: #2a2440;
@@ -61,6 +65,7 @@
   --bg: #080b0f;
   --text: #f0f9ff;
   --primary: #38bdf8;
+  --primary-rgb: 56, 189, 248;
   --secondary: #94a3b8;
   --caret: #38bdf8;
   --sub: #111827;
@@ -72,6 +77,7 @@
   --bg: #000500;
   --text: #e0ffe0;
   --primary: #00ff41;
+  --primary-rgb: 0, 255, 65;
   --secondary: #00b300;
   --caret: #00ff41;
   --sub: #001a00;
@@ -83,6 +89,7 @@
   --bg: #1a1b26;
   --text: #c0caf5;
   --primary: #f7768e;
+  --primary-rgb: 247, 118, 142;
   --secondary: #9aa5ce;
   --caret: #f7768e;
   --sub: #24283b;
@@ -94,6 +101,7 @@
   --bg: #01161e;
   --text: #ccffeb;
   --primary: #10b981;
+  --primary-rgb: 16, 185, 129;
   --secondary: #6ee7b7;
   --caret: #10b981;
   --sub: #082a32;
@@ -105,6 +113,7 @@
   --bg: #0f172a;
   --text: #e0f2fe;
   --primary: #06b6d4;
+  --primary-rgb: 6, 182, 212;
   --secondary: #94a3b8;
   --caret: #06b6d4;
   --sub: #161e2e;
@@ -116,6 +125,7 @@
   --bg: #1c140d;
   --text: #f5ebe0;
   --primary: #d97706;
+  --primary-rgb: 217, 119, 6;
   --secondary: #d6ccc2;
   --caret: #d97706;
   --sub: #291e14;
@@ -127,6 +137,7 @@
   --bg: #ffffff;
   --text: #1e293b;
   --primary: #3b82f6;
+  --primary-rgb: 59, 130, 246;
   --secondary: #64748b;
   --caret: #3b82f6;
   --sub: #f1f5f9;
