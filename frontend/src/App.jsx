@@ -51,14 +51,14 @@ const THEMES = [
 ];
 
 const TypeBoostLogo = ({ onClick }) => (
-  <div onClick={onClick} className="flex items-center gap-4 select-none group cursor-pointer">
+  <div onClick={onClick} className="flex items-center gap-2 md:gap-4 select-none group cursor-pointer">
     <img
       src={logo}
       alt="TypeBoost Logo"
-      className="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)] group-hover:scale-110 transition-transform duration-300"
+      className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)] group-hover:scale-110 transition-transform duration-300"
     />
     <div className="flex flex-col">
-      <h1 className="text-2xl font-black tracking-tighter text-text group-hover:text-primary transition-colors flex items-center gap-2">
+      <h1 className="text-lg md:text-2xl font-black tracking-tighter text-text group-hover:text-primary transition-colors flex items-center gap-1 md:gap-2">
         <span className="uppercase tracking-tight">Type</span>
         <span className="text-primary italic font-cyber tracking-widest drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.4)]">Boost</span>
       </h1>

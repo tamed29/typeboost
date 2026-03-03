@@ -64,16 +64,16 @@ const AboutPage = ({ theme }) => {
                         <Terminal size={28} className="text-primary" />
                         <span className="text-xs font-mono text-primary uppercase tracking-[0.8em]">System Architecture</span>
                     </div>
-                    <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-text italic tracking-tighter leading-[0.9] mb-8">
+                    <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black text-text italic tracking-tighter leading-[0.9] mb-6 md:mb-8">
                         NEURAL <br />
                         <span className="text-gradient">SYNCHRONIZATION</span>
                     </h1>
-                    <p className="text-secondary text-lg lg:text-xl leading-relaxed opacity-80 font-medium max-w-2xl">
+                    <p className="text-secondary text-base lg:text-xl leading-relaxed opacity-80 font-medium max-w-2xl px-1 sm:px-0">
                         TypeBoost is a high-performance, precision-focused typing system designed for operatives who demand the utmost accuracy and speed.
-                        By leveraging low-latency input engines, adaptive modes (Time, Words, Quotes), and synchronized neural feedback, we transform
-                        standard typing practices into a high-fidelity data extraction protocol.
+                        By leveraging low-latency input engines, adaptive modes, and synchronized neural feedback, we transform
+                        standard typing practices into a high-fidelity protocol.
                     </p>
-                    <p className="mt-4 text-secondary text-md lg:text-lg leading-relaxed opacity-60 font-medium max-w-2xl">
+                    <p className="mt-4 text-secondary text-sm lg:text-lg leading-relaxed opacity-60 font-medium max-w-2xl px-1 sm:px-0 hidden sm:block">
                         Whether tracking Words Per Minute (WPM) strictly or challenging yourself against expert-level constraints, our minimalist architecture guarantees sub-millisecond keystroke detection globally. You can fully customize your layout, toggle dynamic themes, and trace exact error entropy. Build, measure, and scale your keyboard bandwidth.
                     </p>
                 </div>
@@ -90,48 +90,47 @@ const AboutPage = ({ theme }) => {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-100px" }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
             >
-                <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-12 rounded-[3rem] backdrop-blur-xl flex flex-col h-full transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-4 bg-background rounded-2xl text-primary border border-border-sub shadow-inner"><Cpu size={24} /></div>
-                        <h2 className="text-2xl font-black italic tracking-tight uppercase">Core Logic</h2>
+                <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] backdrop-blur-xl flex flex-col h-full transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="p-3 md:p-4 bg-background rounded-2xl text-primary border border-border-sub shadow-inner"><Cpu size={20} md:size={24} /></div>
+                        <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Core Logic</h2>
                     </div>
-                    <ul className="space-y-6 flex-grow">
-                        <LogPoint label="Vite + React 18" sub="Lightning Reactive Engine" />
-                        <LogPoint label="Firebase Alpha" sub="Real-time Neural Persistence" />
+                    <ul className="space-y-4 md:space-y-6 flex-grow">
+                        <LogPoint label="Vite + React 19" sub="Lightning Reactive Engine" />
+                        <LogPoint label="Firebase Engine" sub="Real-time Neural Persistence" />
                         <LogPoint label="Tailwind v4" sub="Adaptive Style Topology" />
                         <LogPoint label="Framer Motion" sub="Kinetic Entrance Vectors" />
                     </ul>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-12 rounded-[3rem] backdrop-blur-xl flex flex-col h-full transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/5">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-4 bg-background rounded-2xl text-emerald-500 border border-border-sub shadow-inner"><Shield size={24} /></div>
-                        <h2 className="text-2xl font-black italic tracking-tight uppercase">Security</h2>
+                <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] backdrop-blur-xl flex flex-col h-full transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/5">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="p-3 md:p-4 bg-background rounded-2xl text-emerald-500 border border-border-sub shadow-inner"><Shield size={20} md:size={24} /></div>
+                        <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Security</h2>
                     </div>
-                    <ul className="space-y-6 flex-grow">
-                        <LogPoint label="Auth Secure" sub="Biometric Persistence Simulation" />
+                    <ul className="space-y-4 md:space-y-6 flex-grow">
+                        <LogPoint label="Auth Secure" sub="Biometric Signature Flow" />
                         <LogPoint label="Firestore Rules" sub="Closed-loop Data Protection" />
                         <LogPoint label="Admin Command" sub="Tier 1 Elevated Control" />
                         <LogPoint label="Encrypted Routing" sub="Route-level Verification" />
                     </ul>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-12 rounded-[3rem] backdrop-blur-xl flex flex-col h-full md:col-span-2 lg:col-span-1 transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/5">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-4 bg-background rounded-2xl text-orange-500 border border-border-sub shadow-inner"><Network size={24} /></div>
-                        <h2 className="text-2xl font-black italic tracking-tight uppercase">Topology</h2>
+                <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] backdrop-blur-xl flex flex-col h-full md:col-span-2 lg:col-span-1 transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/5">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="p-3 md:p-4 bg-background rounded-2xl text-orange-500 border border-border-sub shadow-inner"><Network size={20} md:size={24} /></div>
+                        <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Topology</h2>
                     </div>
-                    <div className="flex flex-wrap gap-4 mt-2">
+                    <div className="flex flex-wrap gap-2 md:gap-4 mt-2">
                         <TechBadge icon={Globe} label="Region: Global" />
                         <TechBadge icon={Zap} label="Low-Latency" />
                         <TechBadge icon={Activity} label="Status: Operational" />
-                        <TechBadge icon={Award} label="Version: v9.4 Elite" />
-                        <TechBadge icon={Terminal} label="Interface: CLI-Sim" />
+                        <TechBadge icon={Award} label="Version: v4.2 Nexus" />
                     </div>
-                    <p className="mt-8 text-secondary opacity-60 text-sm leading-relaxed border-t border-border-sub pt-6">
-                        The TypeBoost infrastructure is deployed across edge nodes globally, ensuring that every simulated terminal responds with instantaneous feedback, regardless of the operative's geographic sector.
+                    <p className="mt-6 md:mt-8 text-secondary opacity-60 text-xs md:text-sm leading-relaxed border-t border-border-sub pt-4 md:pt-6">
+                        The TypeBoost infrastructure is deployed across edge nodes globally, ensuring that every simulated terminal responds with instantaneous feedback.
                     </p>
                 </motion.section>
             </motion.div>
@@ -160,20 +159,20 @@ const AboutPage = ({ theme }) => {
 };
 
 const StatCard = ({ label, value, sub, color }) => (
-    <div className="bg-sub/5 border border-border-sub p-10 rounded-[2.5rem] flex flex-col items-start lg:items-center justify-center min-w-[200px] shadow-2xl relative overflow-hidden group">
+    <div className="bg-sub/5 border border-border-sub p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] flex flex-col items-start md:items-center justify-center min-w-[140px] md:min-w-[200px] shadow-2xl relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <span className="text-xs font-mono text-secondary uppercase tracking-[0.4em] mb-4 opacity-70 text-left lg:text-center relative z-10">{label}</span>
-        <div className="flex items-baseline gap-3 relative z-10">
-            <span className={`text-5xl lg:text-6xl font-black italic tracking-tighter ${color}`}>{value}</span>
-            <span className="text-xs font-mono text-secondary opacity-50 uppercase tracking-widest">{sub}</span>
+        <span className="text-[10px] md:text-xs font-mono text-secondary uppercase tracking-[0.2em] md:tracking-[0.4em] mb-2 md:mb-4 opacity-70 text-left md:text-center relative z-10">{label}</span>
+        <div className="flex items-baseline gap-2 md:gap-3 relative z-10">
+            <span className={`text-3xl md:text-6xl font-black italic tracking-tighter ${color}`}>{value}</span>
+            <span className="text-[10px] md:text-xs font-mono text-secondary opacity-50 uppercase tracking-widest">{sub}</span>
         </div>
     </div>
 );
 
 const LogPoint = ({ label, sub }) => (
-    <li className="flex flex-col pl-6 border-l-4 border-primary/30 py-1 hover:border-primary transition-colors duration-300 group">
-        <span className="text-lg font-black uppercase tracking-tight text-text leading-tight group-hover:text-primary transition-colors">{label}</span>
-        <span className="text-xs font-mono text-secondary opacity-70 lowercase tracking-widest mt-1.5">{sub}</span>
+    <li className="flex flex-col pl-4 md:pl-6 border-l-4 border-primary/30 py-1 hover:border-primary transition-colors duration-300 group">
+        <span className="text-base md:text-lg font-black uppercase tracking-tight text-text leading-tight group-hover:text-primary transition-colors">{label}</span>
+        <span className="text-[10px] md:text-xs font-mono text-secondary opacity-70 lowercase tracking-widest mt-1 md:mt-1.5">{sub}</span>
     </li>
 );
 
