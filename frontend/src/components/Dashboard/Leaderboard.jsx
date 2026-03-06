@@ -12,11 +12,11 @@ const Leaderboard = () => {
     useEffect(() => {
         const fetchScores = async () => {
             try {
-                // Fetch top 20 scores
+                // Fetch top scores
                 const q = query(
                     collection(db, 'scores'),
                     orderBy('score', 'desc'),
-                    limit(20)
+                    limit(50)
                 );
                 const querySnapshot = await getDocs(q);
                 const scoresData = querySnapshot.docs.map(doc => ({
@@ -24,7 +24,7 @@ const Leaderboard = () => {
                     ...doc.data()
                 }));
 
-                // Filter for unique per user (Top 2 scores per user)
+                // Filter for unique per user (Top 1 score per user)
                 const uniqueScores = [];
                 const userScoreCounts = {}; // { userId/username: count }
 
@@ -33,13 +33,13 @@ const Leaderboard = () => {
                     if (!identifier) continue;
 
                     const currentCount = userScoreCounts[identifier] || 0;
-                    if (currentCount < 2) {
+                    if (currentCount < 1) {
                         uniqueScores.push(score);
-                        userScoreCounts[identifier] = currentCount + 1;
+                        userScoreCounts[identifier] = 1;
                     }
                 }
 
-                setScores(uniqueScores);
+                setScores(uniqueScores.slice(0, 20));
             } catch (error) {
                 console.error("Leaderboard Sync Error:", error);
                 setError(error.message);
@@ -60,100 +60,105 @@ const Leaderboard = () => {
     }, []);
 
     const RankIcon = ({ index }) => {
-        if (index === 0) return <Trophy size={20} className="text-primary fill-primary/10" />;
-        if (index === 1) return <Medal size={20} className="text-secondary" />;
-        if (index === 2) return <Star size={20} className="text-secondary/50" />;
-        return <span className="text-[11px] font-mono opacity-20">{index + 1}</span>;
+        if (index === 0) return <Trophy size={16} className="text-[#FFD700]" />;
+        if (index === 1) return <Medal size={16} className="text-[#C0C0C0]" />;
+        if (index === 2) return <Medal size={16} className="text-[#CD7F32]" />;
+        return <span className="text-xs font-semibold text-secondary/40">{index + 1}</span>;
     };
 
     return (
-        <div className="w-full max-w-5xl mx-auto space-y-16">
-            <header className="flex flex-col md:flex-row items-center justify-between gap-8 px-4">
-                <div className="flex items-center gap-3 md:gap-6">
-                    <div className="w-1.5 md:w-2 h-8 md:h-12 bg-primary rounded-full shadow-lg shadow-primary/20" />
+        <div className="w-full max-w-4xl mx-auto space-y-8 md:space-y-10 mb-10 mt-4 md:mt-8">
+            <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-2 md:px-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                    <div className="w-1 md:w-1.5 h-6 md:h-8 bg-primary rounded-full shadow-md shadow-primary/20" />
                     <div className="flex flex-col">
-                        <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter uppercase text-text">Leaderboard</h2>
-                        <p className="text-[7px] md:text-[9px] font-mono text-secondary uppercase tracking-[0.3em] md:tracking-[0.5em] opacity-40">Top Typists Worldwide</p>
+                        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-text">Leaderboard</h2>
+                        <p className="text-[10px] md:text-xs font-medium text-secondary/60">Top Typists Worldwide</p>
                     </div>
                 </div>
 
-                <div className="flex gap-4">
-                    <div className="bg-sub px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl flex items-center gap-4 md:gap-6">
-                        <div className="flex items-center gap-2 md:gap-3">
-                            <Target size={12} className="text-primary" />
-                            <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em]">ACCURACY: 100%</span>
-                        </div>
-                        <div className="w-px h-3 md:h-4 bg-primary/20" />
-                        <div className="flex items-center gap-2 md:gap-3">
-                            <Hash size={12} className="text-primary" />
-                            <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em]">TOP 20 PLAYERS</span>
-                        </div>
+                <div className="bg-sub px-3 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-3 md:gap-4 w-full md:w-auto">
+                    <div className="flex items-center gap-2">
+                        <Target size={14} className="text-primary/70" />
+                        <span className="text-[10px] md:text-xs font-semibold text-secondary/80">ACCURACY: 100%</span>
+                    </div>
+                    <div className="w-px h-3 bg-secondary/20" />
+                    <div className="flex items-center gap-2">
+                        <Hash size={14} className="text-primary/70" />
+                        <span className="text-[10px] md:text-xs font-semibold text-secondary/80">TOP PLAYERS</span>
                     </div>
                 </div>
             </header>
 
-            <div className="bg-sub rounded-[3rem] overflow-hidden">
-                <div className="grid grid-cols-1 divide-y divide-primary/5">
+            <div className="bg-sub/30 rounded-2xl overflow-hidden shadow-sm border border-secondary/10">
+                <div className="flex flex-col divide-y divide-secondary/10">
                     {/* LEADERBOARD HEADER MAP */}
-                    <div className="hidden lg:grid grid-cols-12 gap-4 px-10 py-6 bg-background/20 font-mono text-[9px] uppercase tracking-[0.5em] text-secondary opacity-70">
-                        <div className="col-span-1">RANK</div>
-                        <div className="col-span-5">PLAYER</div>
-                        <div className="col-span-3 text-right">TOTAL SCORE</div>
-                        <div className="col-span-3 text-right">SPEED (WPM)</div>
+                    <div className="hidden md:flex justify-between items-center px-6 md:px-8 py-3 bg-background/30 text-[10px] md:text-xs font-semibold text-secondary/60">
+                        <div className="flex gap-4 items-center w-1/2">
+                            <div className="w-8">RANK</div>
+                            <div>PLAYER</div>
+                        </div>
+                        <div className="flex gap-4 w-1/2 justify-end">
+                            <div className="w-20 md:w-24 text-right">SCORE</div>
+                            <div className="w-16 md:w-24 text-right">WPM</div>
+                        </div>
                     </div>
 
                     {scores.map((score, index) => (
                         <motion.div
-                            initial={{ opacity: 0, x: -10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, y: 5 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: index * 0.03 }}
+                            transition={{ delay: index * 0.02 }}
                             key={score.id || index}
-                            className="lg:grid lg:grid-cols-12 flex flex-col items-center lg:items-center gap-4 lg:gap-4 lg:px-10 px-6 py-6 lg:py-8 hover:bg-primary/[0.02] transition-colors group relative"
+                            className="flex flex-row items-center justify-between px-3 sm:px-6 md:px-8 py-2 md:py-3 hover:bg-primary/5 transition-colors group relative bg-sub/50"
                         >
-                            <div className="col-span-1 flex items-center justify-center lg:justify-start">
-                                <RankIcon index={index} />
-                            </div>
-
-                            <div className="col-span-5 flex items-center gap-6 w-full lg:w-auto">
-                                <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-background items-center justify-center text-secondary/30 group-hover:text-primary transition-all">
-                                    <User size={22} />
+                            <div className="flex items-center gap-3 md:gap-4 w-[60%] md:w-1/2 overflow-hidden">
+                                <div className="w-6 md:w-8 flex justify-center flex-shrink-0">
+                                    <RankIcon index={index} />
                                 </div>
-                                <div className="space-y-1 text-center lg:text-left w-full lg:w-auto">
-                                    <p className="text-lg font-black italic uppercase tracking-tight text-text group-hover:text-primary transition-all">
+                                <div className="hidden sm:flex w-8 h-8 rounded-full bg-background items-center justify-center text-secondary/40 group-hover:text-primary transition-colors flex-shrink-0 border border-secondary/5">
+                                    <User size={14} />
+                                </div>
+                                <div className="flex flex-col min-w-0 pr-2">
+                                    <p className="text-sm md:text-base font-semibold text-text truncate group-hover:text-primary transition-colors">
                                         {score.username || 'ANONYMOUS'}
                                     </p>
-                                    <p className="text-[9px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40">
-                                        VERIFIED // {score.mode} {score.category && `[${score.category}]`}
+                                    <p className="text-[9px] md:text-[10px] text-secondary/60 truncate">
+                                        {score.mode} {score.category && `• ${score.category}`}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="col-span-3 flex flex-row lg:flex-col lg:items-end items-center justify-between lg:justify-start w-full lg:w-auto px-4 md:px-0 bg-background/20 lg:bg-transparent p-3 lg:p-0 rounded-xl lg:rounded-none">
-                                <div className="flex flex-col items-start lg:items-end">
-                                    <span className="text-2xl md:text-4xl font-black italic text-primary tracking-tighter group-hover:scale-110 duration-500 transition-transform">{score.score || Math.round(score.wpm * (score.accuracy / 100))}</span>
-                                    <span className="text-[7px] md:text-[8px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em] opacity-20">Score</span>
+                            <div className="flex items-center justify-end gap-3 md:gap-6 w-[40%] md:w-1/2">
+                                <div className="flex flex-col items-end w-20 md:w-24">
+                                    <span className="text-base md:text-lg font-bold text-primary group-hover:scale-105 transition-transform origin-right">
+                                        {score.score || Math.round(score.wpm * (score.accuracy / 100))}
+                                    </span>
+                                    <span className="md:hidden text-[9px] text-secondary/50">Score</span>
                                 </div>
 
-                                <div className="flex flex-col items-end lg:items-end">
-                                    <div className="flex items-center gap-1 md:gap-2">
-                                        <span className="text-lg md:text-xl font-bold text-text opacity-60 italic">{score.wpm}</span>
-                                        <span className="text-[8px] md:text-[9px] font-mono text-secondary opacity-40">WPM</span>
+                                <div className="w-px h-6 bg-secondary/20 hidden md:block" />
+
+                                <div className="flex flex-col items-end w-16 md:w-24">
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-sm md:text-base font-bold text-text/80">{score.wpm}</span>
+                                        <span className="hidden md:inline text-[9px] md:text-[10px] text-secondary/60 mb-0.5">WPM</span>
                                     </div>
-                                    <span className="text-[7px] md:text-[8px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em] opacity-20">Speed</span>
+                                    <span className="md:hidden text-[9px] text-secondary/50">WPM</span>
                                 </div>
                             </div>
 
                             {index < 3 && (
-                                <div className="absolute top-0 right-0 p-2 opacity-5 pointer-events-none">
-                                    <Zap size={60} className="text-primary rotate-12 lg:w-[100px] lg:h-[100px]" />
+                                <div className="absolute top-0 right-0 bottom-0 pr-4 flex items-center opacity-[0.03] pointer-events-none">
+                                    <Zap size={24} className="text-primary rotate-12" />
                                 </div>
                             )}
                         </motion.div>
                     ))}
 
                     {scores.length === 0 && !loading && !error && (
-                        <div className="p-32 text-center opacity-20 font-mono text-[10px] uppercase tracking-[0.8em]">
+                        <div className="py-20 text-center text-secondary/40 text-sm font-medium">
                             No scores found. Be the first to play!
                         </div>
                     )}
@@ -191,8 +196,8 @@ service cloud.firestore {
                 </div>
             </div>
 
-            <footer className="text-center opacity-20 py-10">
-                <p className="text-[9px] font-mono text-secondary uppercase tracking-[0.5em]">Live Updates Active // High Score Filter Engaged</p>
+            <footer className="text-center py-6">
+                <p className="text-[10px] md:text-xs text-secondary/40">Verified high scores across all game modes</p>
             </footer>
         </div>
     );
