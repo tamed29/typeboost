@@ -117,7 +117,7 @@ const GameEngine = ({ theme, settings, onRequireAuth }) => {
 
         setTimeout(() => {
             setIsBooting(false);
-            if (!auth.currentUser && guestTrials >= 5) {
+            if (!auth.currentUser && guestTrials >= 20) {
                 onRequireAuth?.();
                 return;
             }
@@ -185,7 +185,22 @@ const GameEngine = ({ theme, settings, onRequireAuth }) => {
             const newTrials = guestTrials + 1;
             setGuestTrials(newTrials);
             localStorage.setItem('guestTrials', newTrials.toString());
-            if (newTrials >= 5) {
+
+            // Save best guest score locally
+            const savedGuestBest = JSON.parse(localStorage.getItem('guestBestScore') || 'null');
+            if (!savedGuestBest || finalScore > savedGuestBest.score) {
+                localStorage.setItem('guestBestScore', JSON.stringify({
+                    id: 'local-guest',
+                    username: 'YOU (Guest)',
+                    wpm: finalWpm,
+                    accuracy: Math.max(0, finalAccuracy),
+                    score: finalScore,
+                    mode,
+                    category: mode === 'time' ? `${duration}s` : (mode === 'words' ? `${wordCount}w` : 'quote'),
+                }));
+            }
+
+            if (newTrials >= 20) {
                 setTimeout(() => onRequireAuth?.(), 1500);
             }
         }

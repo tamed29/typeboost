@@ -24,6 +24,21 @@ const Leaderboard = () => {
                     ...doc.data()
                 }));
 
+                // Get local guest best score if it exists
+                let guestScore = null;
+                try {
+                    guestScore = JSON.parse(localStorage.getItem('guestBestScore'));
+                } catch (e) {
+                    console.error("Local storage read error", e);
+                }
+
+                if (guestScore) {
+                    scoresData.push(guestScore);
+                }
+
+                // Sort again to ensure guest score is in the correct order
+                scoresData.sort((a, b) => b.score - a.score);
+
                 // Filter for unique per user (Top 1 score per user)
                 const uniqueScores = [];
                 const userScoreCounts = {}; // { userId/username: count }
@@ -111,7 +126,7 @@ const Leaderboard = () => {
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.02 }}
                             key={score.id || index}
-                            className="flex flex-row items-center justify-between px-3 sm:px-6 md:px-8 py-2 md:py-3 hover:bg-primary/5 transition-colors group relative bg-sub/50"
+                            className={`flex flex-row items-center justify-between px-3 sm:px-6 md:px-8 py-2 md:py-3 transition-colors group relative ${score.id === 'local-guest' ? 'bg-primary/10 border-l-2 border-primary' : 'hover:bg-primary/5 bg-sub/50'}`}
                         >
                             <div className="flex items-center gap-3 md:gap-4 w-[60%] md:w-1/2 overflow-hidden">
                                 <div className="w-6 md:w-8 flex justify-center flex-shrink-0">
