@@ -17,7 +17,7 @@ import {
     TrendingUp
 } from 'lucide-react';
 
-const GameEngine = ({ theme, settings }) => {
+const GameEngine = ({ theme, settings, onRequireAuth }) => {
     const [mode, setMode] = useState('words');
     const [duration, setDuration] = useState(20);
     const [wordCount, setWordCount] = useState(50);
@@ -36,6 +36,9 @@ const GameEngine = ({ theme, settings }) => {
     const [showWarning, setShowWarning] = useState(false);
     const [wpmHistory, setWpmHistory] = useState([]);
     const [isBooting, setIsBooting] = useState(true);
+    const [guestTrials, setGuestTrials] = useState(() => {
+        return parseInt(localStorage.getItem('guestTrials') || '0', 10);
+    });
 
     const isConfigLocked = gameStarted && !isFinished;
     const inputRef = useRef(null);
@@ -114,6 +117,10 @@ const GameEngine = ({ theme, settings }) => {
 
         setTimeout(() => {
             setIsBooting(false);
+            if (!auth.currentUser && guestTrials >= 5) {
+                onRequireAuth?.();
+                return;
+            }
             inputRef.current?.focus();
         }, 400);
     };
@@ -174,6 +181,15 @@ const GameEngine = ({ theme, settings }) => {
 
         setStats({ wpm: finalWpm, accuracy: Math.max(0, finalAccuracy), errors: finalErrors });
 
+        if (!auth.currentUser) {
+            const newTrials = guestTrials + 1;
+            setGuestTrials(newTrials);
+            localStorage.setItem('guestTrials', newTrials.toString());
+            if (newTrials >= 5) {
+                setTimeout(() => onRequireAuth?.(), 1500);
+            }
+        }
+
         if (auth.currentUser && finalWpm > 0) {
             try {
                 const username = auth.currentUser?.displayName || auth.currentUser?.email?.split('@')[0] || 'Operator';
@@ -226,9 +242,9 @@ const GameEngine = ({ theme, settings }) => {
                     </button>
                 </div>
                 <div className="flex items-center gap-1 md:gap-3 px-6 border-r border-white/5">
-                    <ModeButton id="time" icon={Timer} label="Chronos" active={mode === 'time'} onClick={() => setMode('time')} />
-                    <ModeButton id="words" icon={Type} label="Lexicon" active={mode === 'words'} onClick={() => setMode('words')} />
-                    <ModeButton id="quote" icon={Quote} label="Wisdom" active={mode === 'quote'} onClick={() => setMode('quote')} />
+                    <ModeButton id="time" icon={Timer} label="Time" active={mode === 'time'} onClick={() => setMode('time')} />
+                    <ModeButton id="words" icon={Type} label="Words" active={mode === 'words'} onClick={() => setMode('words')} />
+                    <ModeButton id="quote" icon={Quote} label="Quote" active={mode === 'quote'} onClick={() => setMode('quote')} />
                     <ModeButton id="zen" icon={Activity} label="Zen" active={mode === 'zen'} onClick={() => setMode('zen')} />
                 </div>
                 <div className="flex items-center gap-2 pl-6">
@@ -246,14 +262,14 @@ const GameEngine = ({ theme, settings }) => {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-8 mb-16">
                         <div className="flex items-end gap-12">
                             <div className="flex flex-col items-center">
-                                <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-2 opacity-40">System Signal</span>
+                                <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-2 opacity-40">Time Left</span>
                                 <div className={`text-5xl font-black font-cyber tabular-nums transition-all ${gameStarted ? (timeLeft <= 5 ? 'text-rose-500 animate-pulse' : 'text-primary') : 'text-primary/20'}`}>
                                     {timeLeft}<span className="text-xl ml-1">S</span>
                                 </div>
                             </div>
                             {gameStarted && (
                                 <div className="flex flex-col items-center">
-                                    <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-2 opacity-40">Current Velocity</span>
+                                    <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] mb-2 opacity-40">Current Speed</span>
                                     <div className="text-5xl font-black font-cyber text-text animate-in fade-in slide-in-from-bottom-2">
                                         {stats.wpm}
                                     </div>
@@ -264,7 +280,7 @@ const GameEngine = ({ theme, settings }) => {
                             <div className="flex gap-4">
                                 <div className="px-5 py-2 rounded-full border border-rose-500/20 bg-rose-500/5 text-rose-500 text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 shadow-lg shadow-rose-500/10">
                                     <ShieldAlert size={14} />
-                                    {settings.difficulty} Protocol Active
+                                    {settings.difficulty} Mode Active
                                 </div>
                             </div>
                         )}
@@ -275,7 +291,7 @@ const GameEngine = ({ theme, settings }) => {
                     {isBooting ? (
                         <motion.div key="boot" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4 py-12">
                             <Cpu className="text-primary animate-spin-slow" size={40} />
-                            <span className="font-mono text-[10px] text-primary uppercase tracking-[1em] animate-pulse ml-[1em]">INITIALIZING_NODE...</span>
+                            <span className="font-mono text-[10px] text-primary uppercase tracking-[1em] animate-pulse ml-[1em]">LOADING...</span>
                         </motion.div>
                     ) : !isFinished ? (
                         <motion.div key="arena" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`typing-arena font-mono tracking-widest leading-relaxed text-center max-w-5xl px-8 transition-opacity duration-1000 ${settings.blindMode ? 'opacity-0' : 'opacity-100'}`}>
@@ -292,18 +308,18 @@ const GameEngine = ({ theme, settings }) => {
                     ) : (
                         <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-16 py-10 w-full">
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-6xl">
-                                <ResultCard label="Velocity" value={stats.wpm} unit="WPM" icon={Zap} color="text-primary" />
-                                <ResultCard label="Precision" value={stats.accuracy} unit="%" icon={TrendingUp} color="text-text" />
-                                <ResultCard label="Chaos" value={stats.errors} unit="ERR" icon={ShieldAlert} color="text-rose-500" />
-                                <ResultCard label="Protocol" value={mode.toUpperCase()} unit="MODE" icon={Cpu} color="text-secondary" />
+                                <ResultCard label="Speed" value={stats.wpm} unit="WPM" icon={Zap} color="text-primary" />
+                                <ResultCard label="Accuracy" value={stats.accuracy} unit="%" icon={TrendingUp} color="text-text" />
+                                <ResultCard label="Errors" value={stats.errors} unit="ERR" icon={ShieldAlert} color="text-rose-500" />
+                                <ResultCard label="Mode" value={mode.toUpperCase()} unit="MODE" icon={Cpu} color="text-secondary" />
                             </div>
 
                             {saveError && (
                                 <div className="p-6 rounded-3xl bg-rose-500/5 border border-rose-500/20 flex gap-5 items-center max-w-lg">
                                     <ShieldAlert className="text-rose-500" />
                                     <div className="text-left">
-                                        <p className="text-xs font-black uppercase text-rose-500 tracking-widest">Telemetry Error</p>
-                                        <p className="text-[10px] font-mono text-secondary opacity-60">System failed to synchronize genomic data with cloud mainframe.</p>
+                                        <p className="text-xs font-black uppercase text-rose-500 tracking-widest">Save Error</p>
+                                        <p className="text-[10px] font-mono text-secondary opacity-60">Failed to save score to the database.</p>
                                     </div>
                                 </div>
                             )}
@@ -330,9 +346,9 @@ const GameEngine = ({ theme, settings }) => {
             </div>
 
             <div className="mt-20 flex justify-center gap-12 opacity-20 pointer-events-none">
-                <StatusIndicator label="Signal" value="Active" />
-                <StatusIndicator label="Node" value="0x7F22" />
-                <StatusIndicator label="Sync" value="Stable" />
+                <StatusIndicator label="Status" value="Active" />
+                <StatusIndicator label="Server" value="Online" />
+                <StatusIndicator label="Save" value="Stable" />
             </div>
         </div>
     );

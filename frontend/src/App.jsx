@@ -64,7 +64,7 @@ const TypeBoostLogo = ({ onClick }) => (
       </h1>
       <div className="flex items-center gap-2 mt-0.5">
         <div className="h-[1px] w-6 bg-primary/40" />
-        <span className="text-[9px] font-mono text-secondary uppercase tracking-[0.6em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all duration-500">nexus_protocol_v4.2</span>
+        <span className="text-[9px] font-mono text-secondary uppercase tracking-[0.6em] opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all duration-500">typing mastery</span>
       </div>
     </div>
   </div>
@@ -209,7 +209,7 @@ function App() {
         <div className="w-20 h-20 border-2 border-primary/20 border-t-primary rounded-3xl animate-spin" />
         <Zap className="absolute inset-0 m-auto text-primary animate-pulse" size={32} />
       </div>
-      <span className="text-primary font-mono text-[9px] uppercase tracking-[0.6em] animate-pulse">Establishing Signal...</span>
+      <span className="text-primary font-mono text-[9px] uppercase tracking-[0.6em] animate-pulse">Loading Web App...</span>
     </div>
   );
 
@@ -234,11 +234,11 @@ function App() {
         <TypeBoostLogo onClick={() => setActiveTab('game')} />
 
         <nav className="hidden lg:flex items-center gap-6 bg-sub px-6 py-2 rounded-[2rem] border border-border-sub">
-          <NavIcon id="game" icon={Keyboard} label="Protocol" />
-          <NavIcon id="lessons" icon={BookOpen} label="Academy" />
-          <NavIcon id="leaderboard" icon={Trophy} label="Rankings" />
-          <NavIcon id="about" icon={Info} label="Architecture" />
-          {user && <NavIcon id="profile" icon={User} label="Identity" />}
+          <NavIcon id="game" icon={Keyboard} label="Play" />
+          <NavIcon id="lessons" icon={BookOpen} label="Lessons" />
+          <NavIcon id="leaderboard" icon={Trophy} label="Leaderboard" />
+          <NavIcon id="about" icon={Info} label="About" />
+          {user && <NavIcon id="profile" icon={User} label="Profile" />}
         </nav>
 
         <div className="flex items-center gap-3 md:gap-5 lg:gap-8">
@@ -249,7 +249,7 @@ function App() {
                   <span className="text-[10px] font-black uppercase text-text group-hover:text-primary transition-colors tracking-tighter">
                     {userInfo?.username || user.email.split('@')[0]}
                   </span>
-                  <span className="text-[7px] text-secondary font-mono uppercase tracking-[0.2em]">Operative level</span>
+                  <span className="text-[7px] text-secondary font-mono uppercase tracking-[0.2em]">Typist</span>
                 </div>
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-sub border border-border-sub flex items-center justify-center text-secondary group-hover:text-primary transition-all">
                   <User size={16} className="md:w-[18px] md:h-[18px]" />
@@ -302,25 +302,7 @@ function App() {
         <AnimatePresence mode="wait">
           {activeTab === 'game' && (
             <motion.div key="game" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="w-full">
-              {user ? (
-                <GameEngine theme={currentTheme} settings={settings} />
-              ) : (
-                <div className="flex flex-col items-center justify-center py-24 bg-sub/20 rounded-[4rem] border border-white/5 gap-8 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                  <div className="relative">
-                    <Terminal size={64} className="text-primary/20 group-hover:text-primary/40 transition-colors duration-700" />
-                    <div className="absolute inset-0 bg-primary blur-3xl opacity-10 animate-pulse" />
-                  </div>
-                  <div className="text-center relative z-10">
-                    <h3 className="text-2xl font-black italic uppercase text-text tracking-tighter mb-2 font-cyber">Neural Link Required</h3>
-                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] opacity-40">Access to protocol node restricted. Establish connection.</p>
-                  </div>
-                  <button onClick={() => setShowAuthModal(true)} className="relative group/btn px-10 py-4 bg-primary text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
-                    <span className="relative z-10">Establish Connection</span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                  </button>
-                </div>
-              )}
+              <GameEngine theme={currentTheme} settings={settings} onRequireAuth={() => setShowAuthModal(true)} />
             </motion.div>
           )}
           {activeTab === 'lessons' && (
@@ -350,11 +332,11 @@ function App() {
                     <div className="absolute inset-0 bg-primary blur-3xl opacity-10 animate-pulse" />
                   </div>
                   <div className="text-center relative z-10">
-                    <h3 className="text-2xl font-black italic uppercase text-text tracking-tighter mb-2 font-cyber">Identity Verification Required</h3>
-                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] opacity-40">Biometric signature mismatch. Please authenticate.</p>
+                    <h3 className="text-2xl font-black italic uppercase text-text tracking-tighter mb-2 font-cyber">Login Required</h3>
+                    <p className="text-[10px] font-mono text-secondary uppercase tracking-[0.5em] opacity-40">Please log in to view your profile.</p>
                   </div>
                   <button onClick={() => setShowAuthModal(true)} className="relative group/btn px-10 py-4 bg-primary text-background font-black uppercase text-xs tracking-[0.2em] rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95">
-                    <span className="relative z-10">Authenticate Identity</span>
+                    <span className="relative z-10">Log In / Register</span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                   </button>
                 </div>
@@ -382,7 +364,7 @@ function App() {
                   <div className="flex items-center gap-5">
                     <div className="p-3 bg-background rounded-2xl border border-border-sub text-primary"><Settings size={22} /></div>
                     <div className="flex flex-col">
-                      <h2 className="text-2xl font-black italic uppercase text-text">Configuration</h2>
+                      <h2 className="text-2xl font-black italic uppercase text-text">Settings</h2>
                     </div>
                   </div>
                   <button onClick={() => setShowSettings(false)} className="p-3 text-secondary hover:text-rose-400 bg-background rounded-full border border-border-sub"><X size={24} /></button>
@@ -410,7 +392,7 @@ function App() {
                     <h3 className="text-[9px] font-mono text-secondary uppercase tracking-[0.5em] pb-3 border-b border-white/5 flex items-center gap-3"><Zap size={14} className="text-primary" /> Behavioral</h3>
                     <div className="space-y-10">
                       <div className="flex justify-between items-center">
-                        <p className="font-bold text-base text-text">Difficulty Protocol</p>
+                        <p className="font-bold text-base text-text">Difficulty Mode</p>
                         <div className="flex bg-background/50 p-1 rounded-xl">
                           {['normal', 'expert', 'master'].map(d => (
                             <button key={d} onClick={() => setSettings({ ...settings, difficulty: d })} className={`px-4 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${settings.difficulty === d ? 'bg-primary text-background' : 'text-secondary hover:text-primary'}`}>{d}</button>

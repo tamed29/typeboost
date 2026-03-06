@@ -62,25 +62,25 @@ const AboutPage = ({ theme }) => {
                 <div className="max-w-3xl">
                     <div className="flex items-center gap-3 mb-6">
                         <Terminal size={28} className="text-primary" />
-                        <span className="text-xs font-mono text-primary uppercase tracking-[0.8em]">System Architecture</span>
+                        <span className="text-xs font-mono text-primary uppercase tracking-[0.8em]">About TypeBoost</span>
                     </div>
                     <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black text-text italic tracking-tighter leading-[0.9] mb-6 md:mb-8">
-                        NEURAL <br />
-                        <span className="text-gradient">SYNCHRONIZATION</span>
+                        HIGH-PERFORMANCE <br />
+                        <span className="text-gradient">TYPING</span>
                     </h1>
                     <p className="text-secondary text-base lg:text-xl leading-relaxed opacity-80 font-medium max-w-2xl px-1 sm:px-0">
-                        TypeBoost is a high-performance, precision-focused typing system designed for operatives who demand the utmost accuracy and speed.
-                        By leveraging low-latency input engines, adaptive modes, and synchronized neural feedback, we transform
-                        standard typing practices into a high-fidelity protocol.
+                        TypeBoost is a high-performance, precision-focused typing application designed for typists who demand the utmost accuracy and speed.
+                        By leveraging low-latency input engines, adaptive modes, and real-time feedback, we transform
+                        standard typing practices into a competitive, engaging experience.
                     </p>
                     <p className="mt-4 text-secondary text-sm lg:text-lg leading-relaxed opacity-60 font-medium max-w-2xl px-1 sm:px-0 hidden sm:block">
-                        Whether tracking Words Per Minute (WPM) strictly or challenging yourself against expert-level constraints, our minimalist architecture guarantees sub-millisecond keystroke detection globally. You can fully customize your layout, toggle dynamic themes, and trace exact error entropy. Build, measure, and scale your keyboard bandwidth.
+                        Whether tracking Words Per Minute (WPM) strictly or challenging yourself against expert-level constraints, our minimal design guarantees accurate keystroke detection. You can fully customize your experience, toggle dynamic themes, and trace exact errors. Practice, measure, and improve your typing skills.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full lg:w-auto mt-8 lg:mt-0">
-                    <StatCard label="Total Synchronizations" value={telemetry.syncs.toLocaleString()} sub="GLOBAL" color="text-primary" />
-                    <StatCard label="Network Fidelity" value={telemetry.fidelity} sub="LATENCY" color="text-emerald-400" />
+                    <StatCard label="Games Played" value={telemetry.syncs.toLocaleString()} sub="GLOBAL" color="text-primary" />
+                    <StatCard label="Server Latency" value={telemetry.fidelity} sub="PING" color="text-emerald-400" />
                 </div>
             </motion.header>
 
@@ -98,10 +98,10 @@ const AboutPage = ({ theme }) => {
                         <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Core Logic</h2>
                     </div>
                     <ul className="space-y-4 md:space-y-6 flex-grow">
-                        <LogPoint label="Vite + React 19" sub="Lightning Reactive Engine" />
-                        <LogPoint label="Firebase Engine" sub="Real-time Neural Persistence" />
-                        <LogPoint label="Tailwind v4" sub="Adaptive Style Topology" />
-                        <LogPoint label="Framer Motion" sub="Kinetic Entrance Vectors" />
+                        <LogPoint label="Vite + React 19" sub="Fast Frontend Framework" />
+                        <LogPoint label="Firebase Database" sub="Real-time Data Storage" />
+                        <LogPoint label="Tailwind v4" sub="Utility-First CSS" />
+                        <LogPoint label="Framer Motion" sub="Smooth Animations" />
                     </ul>
                 </motion.section>
 
@@ -111,17 +111,17 @@ const AboutPage = ({ theme }) => {
                         <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Security</h2>
                     </div>
                     <ul className="space-y-4 md:space-y-6 flex-grow">
-                        <LogPoint label="Auth Secure" sub="Biometric Signature Flow" />
-                        <LogPoint label="Firestore Rules" sub="Closed-loop Data Protection" />
-                        <LogPoint label="Admin Command" sub="Tier 1 Elevated Control" />
-                        <LogPoint label="Encrypted Routing" sub="Route-level Verification" />
+                        <LogPoint label="Authentication" sub="Secure Login Flow" />
+                        <LogPoint label="Database Rules" sub="Data Protection" />
+                        <LogPoint label="Admin Dashboard" sub="Content Management" />
+                        <LogPoint label="Protected Routes" sub="Role-Based Access" />
                     </ul>
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="bg-sub/10 border border-border-sub p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] backdrop-blur-xl flex flex-col h-full md:col-span-2 lg:col-span-1 transform transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/5">
                     <div className="flex items-center gap-4 mb-6 md:mb-8">
                         <div className="p-3 md:p-4 bg-background rounded-2xl text-orange-500 border border-border-sub shadow-inner"><Network size={20} md:size={24} /></div>
-                        <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Topology</h2>
+                        <h2 className="text-xl md:text-2xl font-black italic tracking-tight uppercase">Infrastructure</h2>
                     </div>
                     <div className="flex flex-wrap gap-2 md:gap-4 mt-2">
                         <TechBadge icon={Globe} label="Region: Global" />
@@ -130,7 +130,7 @@ const AboutPage = ({ theme }) => {
                         <TechBadge icon={Award} label="Version: v4.2 Nexus" />
                     </div>
                     <p className="mt-6 md:mt-8 text-secondary opacity-60 text-xs md:text-sm leading-relaxed border-t border-border-sub pt-4 md:pt-6">
-                        The TypeBoost infrastructure is deployed across edge nodes globally, ensuring that every simulated terminal responds with instantaneous feedback.
+                        The TypeBoost infrastructure is deployed reliably, ensuring that the application responds with instantaneous feedback.
                     </p>
                 </motion.section>
             </motion.div>
@@ -146,11 +146,11 @@ const AboutPage = ({ theme }) => {
                 <div className="flex flex-col md:flex-row justify-between items-center gap-12">
                     <div className="flex items-center gap-8 opacity-40 hover:opacity-100 transition-opacity">
                         <Github size={24} className="text-text cursor-pointer hover:text-primary transition-colors" />
-                        <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.4em]">Proprietary Data Transmission &copy; 2026</span>
+                        <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.4em]">TypeBoost &copy; 2026</span>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="h-px w-20 bg-white/5 hidden md:block" />
-                        <span className="text-[10px] font-black uppercase italic tracking-tighter text-primary">Operative Command Authorized</span>
+                        <span className="text-[10px] font-black uppercase italic tracking-tighter text-primary">All Systems Operational</span>
                     </div>
                 </div>
             </motion.footer>

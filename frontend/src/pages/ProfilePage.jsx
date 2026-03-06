@@ -36,7 +36,7 @@ const ProfilePage = ({ theme, userInfo }) => {
     const [newUsername, setNewUsername] = useState('');
     const [updating, setUpdating] = useState(false);
 
-    const displayName = userInfo?.username || auth.currentUser?.email?.split('@')[0] || 'Unknown Operative';
+    const displayName = userInfo?.username || auth.currentUser?.email?.split('@')[0] || 'Anonymous Typer';
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -91,7 +91,7 @@ const ProfilePage = ({ theme, userInfo }) => {
                 if (err.code === 'failed-precondition') {
                     setError("INDEX_REQUIRED: Statistical sorting requires a database index. Please check your browser console for a blue link to auto-generate the index.");
                 } else if (err.code === 'permission-denied') {
-                    setError("ACCESS_DENIED: Critical Security Protocol Active. Please update Firestore Rules.");
+                    setError("ACCESS_DENIED: You do not have permission to view these stats.");
                 } else {
                     setError(err.message);
                 }
@@ -182,7 +182,7 @@ const ProfilePage = ({ theme, userInfo }) => {
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-40 gap-6">
             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <span className="text-primary font-mono text-[10px] uppercase tracking-[0.5em] animate-pulse">Synchronizing Identity Data...</span>
+            <span className="text-primary font-mono text-[10px] uppercase tracking-[0.5em] animate-pulse">Loading Profile...</span>
         </div>
     );
 
@@ -197,8 +197,8 @@ const ProfilePage = ({ theme, userInfo }) => {
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-rose-500 text-background rounded-full"><Zap size={16} /></div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-rose-500">Synchronization Warning</p>
-                            <p className="text-[9px] font-mono text-secondary uppercase tracking-widest opacity-60">Neural link restricted by infrastructure rules. Stats may be out of date.</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-rose-500">Data Load Warning</p>
+                            <p className="text-[9px] font-mono text-secondary uppercase tracking-widest opacity-60">Could not load latest stats due to database permission rules.</p>
                         </div>
                     </div>
                 </motion.div>
@@ -224,7 +224,7 @@ const ProfilePage = ({ theme, userInfo }) => {
                                     value={newUsername}
                                     onChange={(e) => setNewUsername(e.target.value)}
                                     className="bg-background border border-primary/30 rounded-xl px-4 py-2 text-2xl font-black uppercase italic tracking-tighter text-primary outline-none focus:border-primary"
-                                    placeholder="New Alias"
+                                    placeholder="New Username"
                                 />
                                 <button
                                     disabled={updating}
@@ -259,8 +259,7 @@ const ProfilePage = ({ theme, userInfo }) => {
                         )}
                     </div>
                     <div className="flex wrap justify-center md:justify-start gap-4">
-                        <span className="bg-primary/10 text-primary text-[9px] px-6 py-2 rounded-xl border border-primary/20 font-mono uppercase tracking-widest">Vanguard Elite Typer</span>
-                        <span className="bg-sub text-secondary text-[9px] px-6 py-2 rounded-xl border border-border-sub font-mono uppercase tracking-widest">Level 12 Architect</span>
+                        <span className="bg-primary/10 text-primary text-[9px] px-6 py-2 rounded-xl border border-primary/20 font-mono uppercase tracking-widest">Verified Typer</span>
                     </div>
                 </div>
             </header>
@@ -269,7 +268,7 @@ const ProfilePage = ({ theme, userInfo }) => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 p-10 rounded-[2.5rem] border border-border-sub bg-sub shadow-2xl h-[400px]">
                     <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-lg font-black uppercase italic tracking-tighter text-primary">Performance Vector</h3>
+                        <h3 className="text-lg font-black uppercase italic tracking-tighter text-primary">Performance Trend</h3>
                         <span className="text-[10px] font-mono text-secondary uppercase tracking-widest">WPM Progression (Last 20)</span>
                     </div>
                     <div className="h-full pb-10">
@@ -278,15 +277,15 @@ const ProfilePage = ({ theme, userInfo }) => {
                 </div>
 
                 <div className="flex flex-col gap-8">
-                    <StatCard label="Peak Velocity" value={stats.bestWpm} color="text-primary" description="Words Per Minute" />
-                    <StatCard label="Precision" value={`${stats.accuracy}%`} color="text-primary" description="Keystroke Fidelity" />
+                    <StatCard label="Highest Speed" value={stats.bestWpm} color="text-primary" description="Words Per Minute" />
+                    <StatCard label="Accuracy" value={`${stats.accuracy}%`} color="text-primary" description="Keystroke Accuracy" />
                 </div>
             </div>
 
             {/* CORE STATS (Remaining) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <StatCard label="Average Pace" value={stats.avgWpm} color="text-primary" description="Mean Performance Across All Sessions" />
-                <StatCard label="Total Sessions" value={stats.totalGames} color="text-secondary" description="Authenticated Data Transmissions" />
+                <StatCard label="Average Speed" value={stats.avgWpm} color="text-primary" description="Average Across All Games" />
+                <StatCard label="Games Played" value={stats.totalGames} color="text-secondary" description="Total games completed" />
             </div>
 
             {/* ACTIVITY LOG */}
@@ -294,7 +293,7 @@ const ProfilePage = ({ theme, userInfo }) => {
                 <div className="flex items-center justify-between">
                     <h3 className="text-2xl font-black flex items-center gap-4 italic tracking-tight text-primary">
                         <span className="w-2 h-8 bg-primary rounded-full" />
-                        TEMPORAL ACTIVITY LOG
+                        RECENT ACTIVITY
                     </h3>
                 </div>
 
@@ -302,10 +301,10 @@ const ProfilePage = ({ theme, userInfo }) => {
                     <table className="w-full text-left font-mono text-[10px]">
                         <thead>
                             <tr className="border-b border-border-sub bg-sub/50 transition-colors">
-                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black">Nexus Engine</th>
-                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black text-center">Velocity (WPM)</th>
-                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black text-center">Precision</th>
-                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black text-right">Synchronization Time</th>
+                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black">Game Session</th>
+                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black text-center">Speed (WPM)</th>
+                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black text-center">Accuracy</th>
+                                <th className="p-8 text-secondary uppercase tracking-[0.3em] font-black text-right">Date / Time</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border-sub text-secondary">
@@ -313,7 +312,7 @@ const ProfilePage = ({ theme, userInfo }) => {
                                 <tr key={s.id || i} className="hover:bg-primary/5 transition-all group">
                                     <td className="p-8 flex items-center gap-3">
                                         <div className="w-2 h-2 rounded-full bg-primary group-hover:animate-ping" />
-                                        <span className="font-black italic">PROT_SYNC_{i}</span>
+                                        <span className="font-black italic">GAME_{i}</span>
                                     </td>
                                     <td className="p-8 text-center text-2xl font-black group-hover:text-primary transition-colors">
                                         {s.wpm}

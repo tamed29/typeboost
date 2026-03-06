@@ -24,7 +24,7 @@ const Leaderboard = () => {
                     ...doc.data()
                 }));
 
-                // Filter for unique per user (Top 2 scores per operative)
+                // Filter for unique per user (Top 2 scores per user)
                 const uniqueScores = [];
                 const userScoreCounts = {}; // { userId/username: count }
 
@@ -72,8 +72,8 @@ const Leaderboard = () => {
                 <div className="flex items-center gap-3 md:gap-6">
                     <div className="w-1.5 md:w-2 h-8 md:h-12 bg-primary rounded-full shadow-lg shadow-primary/20" />
                     <div className="flex flex-col">
-                        <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter uppercase text-text">Synchronization Hall</h2>
-                        <p className="text-[7px] md:text-[9px] font-mono text-secondary uppercase tracking-[0.3em] md:tracking-[0.5em] opacity-40">Elite Terminal Rankins v5.0</p>
+                        <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter uppercase text-text">Leaderboard</h2>
+                        <p className="text-[7px] md:text-[9px] font-mono text-secondary uppercase tracking-[0.3em] md:tracking-[0.5em] opacity-40">Top Typists Worldwide</p>
                     </div>
                 </div>
 
@@ -81,12 +81,12 @@ const Leaderboard = () => {
                     <div className="bg-sub px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl flex items-center gap-4 md:gap-6">
                         <div className="flex items-center gap-2 md:gap-3">
                             <Target size={12} className="text-primary" />
-                            <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em]">MAX_ENTROPY: 0.0</span>
+                            <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em]">ACCURACY: 100%</span>
                         </div>
                         <div className="w-px h-3 md:h-4 bg-primary/20" />
                         <div className="flex items-center gap-2 md:gap-3">
                             <Hash size={12} className="text-primary" />
-                            <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em]">CAPACITY: 20_NODES</span>
+                            <span className="text-[8px] md:text-[10px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em]">TOP 20 PLAYERS</span>
                         </div>
                     </div>
                 </div>
@@ -97,9 +97,9 @@ const Leaderboard = () => {
                     {/* LEADERBOARD HEADER MAP */}
                     <div className="hidden lg:grid grid-cols-12 gap-4 px-10 py-6 bg-background/20 font-mono text-[9px] uppercase tracking-[0.5em] text-secondary opacity-70">
                         <div className="col-span-1">RANK</div>
-                        <div className="col-span-5">OPERATIVE SIGNATURE</div>
-                        <div className="col-span-3 text-right">LINK SCORE</div>
-                        <div className="col-span-3 text-right">VELOCITY (WPM)</div>
+                        <div className="col-span-5">PLAYER</div>
+                        <div className="col-span-3 text-right">TOTAL SCORE</div>
+                        <div className="col-span-3 text-right">SPEED (WPM)</div>
                     </div>
 
                     {scores.map((score, index) => (
@@ -121,10 +121,10 @@ const Leaderboard = () => {
                                 </div>
                                 <div className="space-y-1 text-center lg:text-left w-full lg:w-auto">
                                     <p className="text-lg font-black italic uppercase tracking-tight text-text group-hover:text-primary transition-all">
-                                        {score.username || 'ANONYMOUS_SYS'}
+                                        {score.username || 'ANONYMOUS'}
                                     </p>
                                     <p className="text-[9px] font-mono text-secondary uppercase tracking-[0.4em] opacity-40">
-                                        NODE_VERIFIED // {score.mode} {score.category && `[${score.category}]`}
+                                        VERIFIED // {score.mode} {score.category && `[${score.category}]`}
                                     </p>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ const Leaderboard = () => {
                             <div className="col-span-3 flex flex-row lg:flex-col lg:items-end items-center justify-between lg:justify-start w-full lg:w-auto px-4 md:px-0 bg-background/20 lg:bg-transparent p-3 lg:p-0 rounded-xl lg:rounded-none">
                                 <div className="flex flex-col items-start lg:items-end">
                                     <span className="text-2xl md:text-4xl font-black italic text-primary tracking-tighter group-hover:scale-110 duration-500 transition-transform">{score.score || Math.round(score.wpm * (score.accuracy / 100))}</span>
-                                    <span className="text-[7px] md:text-[8px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em] opacity-20">Link_Score</span>
+                                    <span className="text-[7px] md:text-[8px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em] opacity-20">Score</span>
                                 </div>
 
                                 <div className="flex flex-col items-end lg:items-end">
@@ -140,7 +140,7 @@ const Leaderboard = () => {
                                         <span className="text-lg md:text-xl font-bold text-text opacity-60 italic">{score.wpm}</span>
                                         <span className="text-[8px] md:text-[9px] font-mono text-secondary opacity-40">WPM</span>
                                     </div>
-                                    <span className="text-[7px] md:text-[8px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em] opacity-20">Velocity</span>
+                                    <span className="text-[7px] md:text-[8px] font-mono text-secondary uppercase tracking-[0.1em] md:tracking-[0.2em] opacity-20">Speed</span>
                                 </div>
                             </div>
 
@@ -154,7 +154,7 @@ const Leaderboard = () => {
 
                     {scores.length === 0 && !loading && !error && (
                         <div className="p-32 text-center opacity-20 font-mono text-[10px] uppercase tracking-[0.8em]">
-                            No telemetry data detected in this cycle.
+                            No scores found. Be the first to play!
                         </div>
                     )}
 
@@ -192,7 +192,7 @@ service cloud.firestore {
             </div>
 
             <footer className="text-center opacity-20 py-10">
-                <p className="text-[9px] font-mono text-secondary uppercase tracking-[0.5em]">Real-time Displacement Protocol Active // High Velocity Filter Engaged</p>
+                <p className="text-[9px] font-mono text-secondary uppercase tracking-[0.5em]">Live Updates Active // High Score Filter Engaged</p>
             </footer>
         </div>
     );

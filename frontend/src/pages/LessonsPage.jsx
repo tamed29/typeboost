@@ -4,34 +4,34 @@ import { BookOpen, Code, Terminal, Zap } from 'lucide-react';
 const CATEGORIES = [
     {
         id: 'foundation',
-        title: 'Home Row Protocol',
-        desc: 'Establish the core neural pathways for absolute terminal precision.',
+        title: 'Home Row Basics',
+        desc: 'Learn the fundamental finger placement for efficient typing.',
         lessons: 8,
-        difficulty: 'INITIATE',
+        difficulty: 'BEGINNER',
         icon: BookOpen
     },
     {
         id: 'ascend',
-        title: 'Vortex Ascension',
-        desc: 'Integrating complex movements and top-row alphanumerics.',
+        title: 'Intermediate Typing',
+        desc: 'Practice complex movements and top-row letters.',
         lessons: 12,
-        difficulty: 'OPERATIVE',
+        difficulty: 'INTERMEDIATE',
         icon: Zap
     },
     {
         id: 'syntax',
-        title: 'Semantic Cipher',
-        desc: 'Advanced punctuation, symbols, and rapid shift maneuvers.',
+        title: 'Advanced Characters',
+        desc: 'Master punctuation, symbols, and shift key usage.',
         lessons: 15,
-        difficulty: 'SPECIALIST',
+        difficulty: 'ADVANCED',
         icon: Code
     },
     {
         id: 'terminal',
-        title: 'Matrix Runtime',
-        desc: 'Writing code blocks, logic flows, and technical documentation.',
+        title: 'Coding Practice',
+        desc: 'Type code snippets, syntax, and structured text.',
         lessons: 20,
-        difficulty: 'ARCHITECT',
+        difficulty: 'EXPERT',
         icon: Terminal
     }
 ];
@@ -41,18 +41,18 @@ const LessonsPage = ({ theme }) => {
         <div className="w-full max-w-6xl mx-auto space-y-20 py-12 select-none">
             <header className="flex flex-col items-center gap-6 text-center">
                 <div className="px-5 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">
-                    Training Academy Node
+                    Typing Lessons
                 </div>
                 <motion.h2
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="text-6xl md:text-7xl font-black tracking-tighter italic uppercase text-text font-cyber"
                 >
-                    ACADEMY <span className="text-primary">ARCHIVE</span>
+                    LEARN TO <span className="text-primary">TYPE</span>
                 </motion.h2>
                 <div className="flex justify-center flex-col items-center gap-3">
                     <div className="w-40 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-                    <p className="text-secondary font-mono text-[9px] uppercase tracking-[0.6em] opacity-40">Proprietary Combat-Type Protocols</p>
+                    <p className="text-secondary font-mono text-[9px] uppercase tracking-[0.6em] opacity-40">Structured typing courses to improve your speed</p>
                 </div>
             </header>
 
@@ -89,13 +89,13 @@ const LessonsPage = ({ theme }) => {
                             <div className="flex items-center justify-between pt-10 border-t border-white/5">
                                 <div className="flex items-center gap-3">
                                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.3em] opacity-40">{cat.lessons} Training Cycles</span>
+                                    <span className="text-[10px] font-mono text-secondary uppercase tracking-[0.3em] opacity-40">{cat.lessons} Lessons</span>
                                 </div>
                                 <motion.button
                                     whileHover={{ x: 8 }}
                                     className="relative group/btn px-8 py-3 bg-primary text-background font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl overflow-hidden transition-all"
                                 >
-                                    <span className="relative z-10 flex items-center gap-3">Initialize <ArrowIcon /></span>
+                                    <span className="relative z-10 flex items-center gap-3">Start Lesson <ArrowIcon /></span>
                                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                                 </motion.button>
                             </div>
@@ -110,9 +110,9 @@ const LessonsPage = ({ theme }) => {
                 className="p-20 rounded-[4rem] border border-dashed border-primary/20 bg-primary/5 text-center relative overflow-hidden group"
             >
                 <div className="absolute inset-0 bg-primary/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                <h4 className="text-3xl font-black text-primary mb-6 uppercase tracking-widest italic font-cyber">Vanguard Synchronization Pending</h4>
+                <h4 className="text-3xl font-black text-primary mb-6 uppercase tracking-widest italic font-cyber">More Lessons Coming Soon</h4>
                 <p className="text-secondary text-[11px] font-mono uppercase tracking-[0.5em] max-w-2xl mx-auto leading-[2] opacity-40 relative z-10">
-                    Additional technical modules for architectural design and terminal shortcuts are currently being synchronized for terminal accessibility. Stand by for uplink.
+                    We are currently preparing new courses for software developers. Check back later.
                 </p>
             </motion.div>
         </div>

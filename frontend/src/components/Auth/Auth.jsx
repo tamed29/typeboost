@@ -66,10 +66,10 @@ const Auth = ({ onAuthChange, theme }) => {
                     </div>
                 </div>
                 <h2 className="text-3xl font-black mb-2 tracking-tighter italic uppercase text-text">
-                    {isLogin ? 'Access Node' : 'Register Genetic Signature'}
+                    {isLogin ? 'Log In' : 'Create Account'}
                 </h2>
                 <p className="text-secondary text-[9px] font-mono uppercase tracking-[0.5em] opacity-30">
-                    Neural Synchronization Gateway
+                    Welcome to TypeBoost
                 </p>
             </div>
 
@@ -85,7 +85,7 @@ const Auth = ({ onAuthChange, theme }) => {
                             <User className="absolute left-5 top-1/2 -translate-y-1/2 text-secondary opacity-20" size={18} />
                             <input
                                 type="text"
-                                placeholder="Universal Username"
+                                placeholder="Username"
                                 className="w-full bg-background border border-white/5 rounded-2xl p-5 pl-14 focus:outline-none focus:border-primary/50 font-mono text-sm transition-all text-text select-auto pointer-events-auto"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -99,7 +99,7 @@ const Auth = ({ onAuthChange, theme }) => {
                     <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-secondary opacity-20" size={18} />
                     <input
                         type="email"
-                        placeholder="Neural ID (Email)"
+                        placeholder="Email Address"
                         className="w-full bg-background border border-white/5 rounded-2xl p-5 pl-14 focus:outline-none focus:border-primary/50 font-mono text-sm transition-all text-text select-auto pointer-events-auto"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -110,7 +110,7 @@ const Auth = ({ onAuthChange, theme }) => {
                     <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-secondary opacity-20" size={18} />
                     <input
                         type="password"
-                        placeholder="Access Cipher"
+                        placeholder="Password"
                         className="w-full bg-background border border-white/5 rounded-2xl p-5 pl-14 focus:outline-none focus:border-primary/50 font-mono text-sm transition-all text-text select-auto pointer-events-auto"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -139,7 +139,7 @@ const Auth = ({ onAuthChange, theme }) => {
                         <div className="w-5 h-5 border-3 border-background/20 border-t-background rounded-full animate-spin" />
                     ) : (
                         <>
-                            {isLogin ? 'Establish Connection' : 'Register Operator'}
+                            {isLogin ? 'Log In' : 'Register'}
                             <ArrowRight size={16} />
                         </>
                     )}
@@ -151,7 +151,7 @@ const Auth = ({ onAuthChange, theme }) => {
                     onClick={() => setIsLogin(!isLogin)}
                     className="text-secondary hover:text-primary text-[10px] font-mono uppercase tracking-widest transition-colors opacity-50 hover:opacity-100"
                 >
-                    {isLogin ? "Generate New Operator Node" : "Existing Operator Signature?"}
+                    {isLogin ? "Create an account?" : "Already have an account?"}
                 </button>
             </div>
         </div>
